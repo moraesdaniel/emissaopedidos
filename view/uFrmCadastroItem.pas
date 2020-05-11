@@ -39,7 +39,7 @@ type
     procedure btnGravarClick(Sender: TObject);
   private
     FAcao: TAcao;
-    procedure PesquisarPeloNome;
+    procedure PesquisarPelaDescricao;
     procedure InicializarTela;
     procedure CarregarItem;
     procedure AtualizarItem;
@@ -89,7 +89,7 @@ end;
 procedure TfrmCadastroItem.btnAlterarClick(Sender: TObject);
 begin
   FAcao := actAtualizar;
-  CarregarItem;
+  CarregarItem();
 end;
 
 procedure TfrmCadastroItem.btnExcluirClick(Sender: TObject);
@@ -104,9 +104,9 @@ end;
 procedure TfrmCadastroItem.btnGravarClick(Sender: TObject);
 begin
   if FAcao = actInserir then begin
-    InserirItem;
+    InserirItem();
   end else if FAcao = actAtualizar then begin
-    AtualizarItem;
+    AtualizarItem();
   end;
 end;
 
@@ -121,13 +121,13 @@ end;
 
 procedure TfrmCadastroItem.btnPesquisarClick(Sender: TObject);
 begin
-  PesquisarPeloNome();
+  PesquisarPelaDescricao();
 end;
 
 procedure TfrmCadastroItem.btnVoltarClick(Sender: TObject);
 begin
   pgCadastroProduto.ActivePage := tbPesquisa;
-  PesquisarPeloNome;
+  PesquisarPelaDescricao();
 end;
 
 procedure TfrmCadastroItem.CarregarItem;
@@ -153,7 +153,7 @@ begin
   tbPesquisa.TabVisible := False;
   tbManutencao.TabVisible := False;
   pgCadastroProduto.ActivePage := tbPesquisa;
-  PesquisarPeloNome();
+  PesquisarPelaDescricao();
 end;
 
 procedure TfrmCadastroItem.ExcluirItem;
@@ -166,7 +166,7 @@ begin
     if oItemController.Excluir(dsPesquisa.DataSet.FieldByName('id_item').AsInteger, sMsg) then begin
       MessageDlg('Item excluído com sucesso!', mtInformation, [mbok], 0);
       edtPesquisa.Clear;
-      PesquisarPeloNome;
+      PesquisarPelaDescricao();
     end else begin
       MessageDlg(sMsg, mtError, [mbok], 0);
     end;
@@ -193,7 +193,7 @@ end;
 
 procedure TfrmCadastroItem.FormShow(Sender: TObject);
 begin
-  InicializarTela;
+  InicializarTela();
 end;
 
 procedure TfrmCadastroItem.InserirItem;
@@ -216,7 +216,7 @@ begin
     if oItemController.Inserir(oItem, sMsg) then begin
       MessageDlg('Item gravado com sucesso!', mtInformation, [mbOk], 0);
       pgCadastroProduto.ActivePage := tbPesquisa;
-      PesquisarPeloNome;
+      PesquisarPelaDescricao;
     end else begin
       MessageDlg(sMsg, mtError, [mbOk], 0);
     end;
@@ -226,7 +226,7 @@ begin
   end;
 end;
 
-procedure TfrmCadastroItem.PesquisarPeloNome;
+procedure TfrmCadastroItem.PesquisarPelaDescricao;
 var
   oItemController: TItemController;
 begin
