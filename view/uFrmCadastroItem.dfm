@@ -22,7 +22,7 @@ object frmCadastroItem: TfrmCadastroItem
     Top = 0
     Width = 404
     Height = 364
-    ActivePage = tbManutencao
+    ActivePage = tbPesquisa
     Align = alClient
     TabOrder = 0
     object tbPesquisa: TTabSheet
@@ -34,13 +34,13 @@ object frmCadastroItem: TfrmCadastroItem
         Height = 49
         Align = alTop
         BevelOuter = bvNone
-        Color = clSilver
+        Color = clScrollBar
         ParentBackground = False
         TabOrder = 0
         object edtPesquisa: TLabeledEdit
           Left = 8
           Top = 20
-          Width = 273
+          Width = 299
           Height = 21
           EditLabel.Width = 42
           EditLabel.Height = 13
@@ -48,8 +48,8 @@ object frmCadastroItem: TfrmCadastroItem
           TabOrder = 0
         end
         object btnPesquisar: TButton
-          Left = 310
-          Top = 21
+          Left = 313
+          Top = 16
           Width = 75
           Height = 25
           Caption = 'Pesquisar'
@@ -64,7 +64,7 @@ object frmCadastroItem: TfrmCadastroItem
         Height = 40
         Align = alBottom
         BevelOuter = bvNone
-        Color = clSilver
+        Color = clScrollBar
         ParentBackground = False
         TabOrder = 1
         object btnAlterar: TButton
@@ -103,6 +103,7 @@ object frmCadastroItem: TfrmCadastroItem
         Height = 241
         Align = alClient
         DataSource = dsPesquisa
+        DrawingStyle = gdsGradient
         ReadOnly = True
         TabOrder = 2
         TitleFont.Charset = DEFAULT_CHARSET
@@ -112,6 +113,7 @@ object frmCadastroItem: TfrmCadastroItem
         TitleFont.Style = []
         Columns = <
           item
+            Color = clWhite
             Expanded = False
             FieldName = 'ID_ITEM'
             Title.Caption = 'C'#243'digo'

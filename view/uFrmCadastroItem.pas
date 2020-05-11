@@ -40,7 +40,7 @@ type
   private
     FAcao: TAcao;
     procedure PesquisarPeloNome;
-    procedure ConfigurarTela;
+    procedure InicializarTela;
     procedure CarregarItem;
     procedure AtualizarItem;
     procedure ExcluirItem;
@@ -148,7 +148,7 @@ begin
   end;
 end;
 
-procedure TfrmCadastroItem.ConfigurarTela;
+procedure TfrmCadastroItem.InicializarTela;
 begin
   tbPesquisa.TabVisible := False;
   tbManutencao.TabVisible := False;
@@ -193,7 +193,7 @@ end;
 
 procedure TfrmCadastroItem.FormShow(Sender: TObject);
 begin
-  ConfigurarTela;
+  InicializarTela;
 end;
 
 procedure TfrmCadastroItem.InserirItem;
