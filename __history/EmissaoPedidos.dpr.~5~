@@ -1,0 +1,18 @@
+program EmissaoPedidos;
+
+uses
+  Vcl.Forms,
+  uFrmPrincipal in 'view\uFrmPrincipal.pas' {frmPrincipal},
+  uFrmCadastroItem in 'view\uFrmCadastroItem.pas' {frmCadastroItem},
+  uItemModel in 'model\uItemModel.pas',
+  uItemControler in 'control\uItemControler.pas';
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TfrmPrincipal, frmPrincipal);
+  Application.CreateForm(TfrmCadastroItem, frmCadastroItem);
+  Application.Run;
+end.
