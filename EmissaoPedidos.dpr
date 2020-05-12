@@ -7,7 +7,8 @@ uses
   uItemModel in 'model\uItemModel.pas',
   uItemController in 'control\uItemController.pas',
   uDmConexao in 'dao\uDmConexao.pas' {DmConexao: TDataModule},
-  uDmItem in 'dao\uDmItem.pas' {DmItem: TDataModule};
+  uDmItem in 'dao\uDmItem.pas' {DmItem: TDataModule},
+  uFrmPedido in 'view\uFrmPedido.pas' {frmPedido};
 
 {$R *.res}
 
