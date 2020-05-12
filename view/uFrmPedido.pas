@@ -5,7 +5,8 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Data.DB,
-  Vcl.Grids, Vcl.DBGrids, Vcl.ComCtrls, Vcl.Mask, System.StrUtils, System.Math;
+  Vcl.Grids, Vcl.DBGrids, Vcl.ComCtrls, Vcl.Mask, System.StrUtils, System.Math,
+  uDmItem, uItemController, System.Generics.Collections, uItemModel;
 
 type
   TfrmPedido = class(TForm)
@@ -21,7 +22,6 @@ type
     btnAlterar: TButton;
     btnExcluir: TButton;
     pnlDigitacaoItem: TPanel;
-    edtItem: TLabeledEdit;
     btnIncluir: TButton;
     edtQuantidade: TEdit;
     Label1: TLabel;
@@ -34,16 +34,19 @@ type
     btnIniciar: TButton;
     edtCliente: TLabeledEdit;
     pnlRodape: TPanel;
-    ComboBox1: TComboBox;
+    cbxItem: TComboBox;
     btnCancelar: TButton;
     btnGravar: TButton;
     Edit1: TEdit;
+    Label4: TLabel;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure edtQuantidadeChange(Sender: TObject);
     procedure edtValorUnitarioChange(Sender: TObject);
     procedure edtNumeroKeyPress(Sender: TObject; var Key: Char);
+    procedure FormShow(Sender: TObject);
   private
     FFormatando: Boolean;
+    procedure CarregarItens;
     { Private declarations }
   public
     { Public declarations }
@@ -114,6 +117,34 @@ procedure TfrmPedido.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   Action := caFree;
   frmPedido := nil;
+end;
+
+procedure TfrmPedido.FormShow(Sender: TObject);
+begin
+  CarregarItens;
+end;
+
+procedure TfrmPedido.CarregarItens;
+var
+  oItemController: TItemController;
+  listaItens: TObjectList<TItemModel>;
+  oItemModel: TItemModel;
+begin
+  DmItem := TDmItem.Create(nil);
+  listaItens := TObjectList<TItemModel>.Create;
+  oItemController := TItemController.Create;
+  try
+    oItemController.BuscarItensCadastrados(listaItens);
+    cbxItem.Items.Clear;
+    cbxItem.Items.Add('<Nenhum>');
+    for oItemModel in listaItens do
+      cbxItem.Items.Add(oItemModel.Descricao);
+    cbxItem.ItemIndex := 0;
+  finally
+    FreeAndNil(oItemController);
+    FreeAndNil(listaItens);
+    FreeAndNil(DmItem);
+  end;
 end;
 
 procedure TfrmPedido.edtNumeroKeyPress(Sender: TObject; var Key: Char);

@@ -12,6 +12,7 @@ object frmPedido: TfrmPedido
   Font.Style = []
   OldCreateOrder = False
   OnClose = FormClose
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object PageControl1: TPageControl
@@ -133,15 +134,12 @@ object frmPedido: TfrmPedido
           Height = 13
           Caption = 'Valor Unit'#225'rio'
         end
-        object edtItem: TLabeledEdit
+        object Label4: TLabel
           Left = 8
-          Top = 22
-          Width = 70
-          Height = 21
-          EditLabel.Width = 22
-          EditLabel.Height = 13
-          EditLabel.Caption = 'Item'
-          TabOrder = 0
+          Top = 6
+          Width = 22
+          Height = 13
+          Caption = 'Item'
         end
         object btnIncluir: TButton
           Left = 647
@@ -149,7 +147,7 @@ object frmPedido: TfrmPedido
           Width = 75
           Height = 25
           Caption = 'I&ncluir'
-          TabOrder = 3
+          TabOrder = 2
         end
         object edtQuantidade: TEdit
           Left = 433
@@ -158,7 +156,7 @@ object frmPedido: TfrmPedido
           Height = 21
           Alignment = taRightJustify
           MaxLength = 14
-          TabOrder = 1
+          TabOrder = 0
           Text = '0,00'
           OnChange = edtQuantidadeChange
         end
@@ -169,20 +167,17 @@ object frmPedido: TfrmPedido
           Height = 21
           Alignment = taRightJustify
           MaxLength = 14
-          TabOrder = 2
+          TabOrder = 1
           Text = '0,00'
           OnChange = edtValorUnitarioChange
         end
-        object ComboBox1: TComboBox
-          Left = 89
+        object cbxItem: TComboBox
+          Left = 8
           Top = 22
           Width = 248
           Height = 21
-          TabOrder = 4
-          Text = 'ComboBox1'
-          Items.Strings = (
-            'Daniel Moraes'
-            'Isabela Tais Rufatto')
+          TabOrder = 3
+          Text = 'cbxItem'
         end
       end
       object pnlCabecalho: TPanel

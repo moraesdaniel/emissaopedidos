@@ -3,7 +3,7 @@ unit uItemController;
 interface
 
 uses
-  uItemModel, uDmItem, System.SysUtils;
+  uItemModel, uDmItem, System.SysUtils, System.Generics.Collections;
 
 type
   TItemController = class
@@ -14,6 +14,7 @@ type
       procedure PesquisarPelaDescricao(sDescricao: String);
       procedure Carregar(oItem: TItemModel; iCodigo: Integer);
       function ValidarDadosObrigatorios(oItem: TItemModel; var sMsg: String) : Boolean;
+      function BuscarItensCadastrados(listaItens: TObjectList<TItemModel>) : Integer;
   end;
 
 implementation
@@ -24,6 +25,12 @@ function TItemController.Atualizar(oItem: TItemModel;
   var sErro: String): Boolean;
 begin
   Result := DmItem.Atualizar(oItem, sErro);
+end;
+
+function TItemController.BuscarItensCadastrados(
+  listaItens: TObjectList<TItemModel>): Integer;
+begin
+  Result := DmItem.BuscarItensCadastrados(listaItens);
 end;
 
 procedure TItemController.Carregar(oItem: TItemModel; iCodigo: Integer);
