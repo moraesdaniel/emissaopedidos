@@ -5,8 +5,8 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Data.DB,
-  Vcl.Grids, Vcl.DBGrids, Vcl.ComCtrls, Vcl.Mask, System.StrUtils, System.Math,
-  uDmItem, uItemController, System.Generics.Collections, uItemModel;
+  Vcl.Grids, Vcl.DBGrids, Vcl.ComCtrls, Vcl.Mask, System.Math,
+  uDmItem, uItemController, System.Generics.Collections, uItemModel, uFuncoes;
 
 type
   TfrmPedido = class(TForm)
@@ -46,11 +46,11 @@ type
     procedure FormShow(Sender: TObject);
   private
     FFormatando: Boolean;
+    oFuncoes: TFuncoes;
     procedure CarregarItens;
     { Private declarations }
   public
     { Public declarations }
-    function FormatarMoeda(sValor: String) : String;
   end;
 
 var
@@ -64,7 +64,7 @@ procedure TfrmPedido.edtQuantidadeChange(Sender: TObject);
 begin
   if Not FFormatando then begin
     FFormatando := True;
-    edtQuantidade.Text := FormatarMoeda(edtQuantidade.Text);
+    edtQuantidade.Text := oFuncoes.FormatarMoeda(edtQuantidade.Text);
     edtQuantidade.SelStart := Length(edtQuantidade.Text);
     FFormatando := False;
   end;
@@ -74,53 +74,22 @@ procedure TfrmPedido.edtValorUnitarioChange(Sender: TObject);
 begin
   if Not FFormatando then begin
     FFormatando := True;
-    edtValorUnitario.Text := FormatarMoeda(edtValorUnitario.Text);
+    edtValorUnitario.Text := oFuncoes.FormatarMoeda(edtValorUnitario.Text);
     edtValorUnitario.SelStart := Length(edtValorUnitario.Text);
     FFormatando := False;
   end;
 end;
 
-function TfrmPedido.FormatarMoeda(sValor: String) : String;
-var
-  iPosicao: Integer;
-  sDecimal, sCentena, sMilhar, sMilhao: String;
-begin
-  //Removendo caracteres especiais
-  for iPosicao := 1 to Length(sValor) do
-    if not (sValor[iPosicao] in ['0'..'9']) then
-      Delete(sValor, iPosicao, 1);
-
-  //Removendo zeros a esquerda
-  while (Copy(sValor, 1, 1) = '0') and (Length(sValor) > 0) do begin
-    sValor := RightStr(sValor, Length(sValor) - 1);
-  end;
-
-  if Length(sValor) = 0 then begin
-    sValor := '0,00';
-  end else if Length(sValor) = 1 then begin
-    sValor := '0,0'+sValor;
-  end else if Length(sValor) = 2 then begin
-    sValor := '0,'+sValor;
-  end else begin
-    sValor := DupeString(' ', 11 - Length(sValor))+sValor;
-    sMilhao := IfThen(Copy(sValor, 1, 3) <> '   ', Trim(Copy(sValor, 1, 3))+'.');
-    sMilhar := IfThen(Copy(sValor, 4, 3) <> '   ', Trim(Copy(sValor, 4, 3))+'.');
-    sCentena := IfThen(Copy(sValor, 7, 3) <> '   ', Trim(Copy(sValor, 7, 3))+',');
-    sDecimal := Copy(sValor, 10, 2);
-    sValor := sMilhao+sMilhar+sCentena+sDecimal
-  end;
-
-  Result := sValor;
-end;
-
 procedure TfrmPedido.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
+  FreeAndNil(oFuncoes);
   Action := caFree;
   frmPedido := nil;
 end;
 
 procedure TfrmPedido.FormShow(Sender: TObject);
 begin
+  oFuncoes := TFuncoes.Create;
   CarregarItens;
 end;
 

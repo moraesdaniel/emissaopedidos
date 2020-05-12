@@ -126,6 +126,7 @@
         </DCCReference>
         <DCCReference Include="model\uPedidoCabModel.pas"/>
         <DCCReference Include="model\uPedidoItemModel.pas"/>
+        <DCCReference Include="control\uFuncoes.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

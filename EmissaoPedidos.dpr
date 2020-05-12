@@ -10,7 +10,8 @@ uses
   uDmItem in 'dao\uDmItem.pas' {DmItem: TDataModule},
   uFrmPedido in 'view\uFrmPedido.pas' {frmPedido},
   uPedidoCabModel in 'model\uPedidoCabModel.pas',
-  uPedidoItemModel in 'model\uPedidoItemModel.pas';
+  uPedidoItemModel in 'model\uPedidoItemModel.pas',
+  uFuncoes in 'control\uFuncoes.pas';
 
 {$R *.res}
 
