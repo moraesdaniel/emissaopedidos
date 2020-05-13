@@ -18,7 +18,6 @@ type
     Panel1: TPanel;
     btnPesquisar: TButton;
     edtPesquisa: TLabeledEdit;
-    DBGrid1: TDBGrid;
     btnNovo: TButton;
     btnAlterar: TButton;
     btnExcluir: TButton;
@@ -44,6 +43,7 @@ type
     Label5: TLabel;
     strgridItens: TStringGrid;
     imgList: TImageList;
+    strgridPedidos: TStringGrid;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure edtQuantidadeChange(Sender: TObject);
     procedure edtValorUnitarioChange(Sender: TObject);
@@ -59,6 +59,7 @@ type
     oFuncoes: TFuncoes;
     procedure CarregarItens;
     procedure ConfigurarGridItens;
+    procedure ConfigurarGridPedidos;
     { Private declarations }
   public
     { Public declarations }
@@ -113,6 +114,7 @@ begin
   oFuncoes := TFuncoes.Create;
   CarregarItens;
   ConfigurarGridItens;
+  ConfigurarGridPedidos;
 end;
 
 procedure TfrmPedido.strgridItensDrawCell(Sender: TObject; ACol, ARow: Integer;
@@ -181,6 +183,14 @@ begin
   strgridItens.Cells[4, 0] := 'Vlr. Total';
   strgridItens.ColWidths[5] := 25;
   strgridItens.ColWidths[6] := 25;
+end;
+
+procedure TfrmPedido.ConfigurarGridPedidos;
+begin
+  strgridPedidos.Cells[0, 0] := 'Código';
+  strgridPedidos.Cells[1, 0] := 'Número';
+  strgridPedidos.Cells[2, 0] := 'Cliente';
+  strgridPedidos.ColWidths[2] := 500;
 end;
 
 procedure TfrmPedido.edtNumeroKeyPress(Sender: TObject; var Key: Char);

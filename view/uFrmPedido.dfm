@@ -20,7 +20,7 @@ object frmPedido: TfrmPedido
     Top = 0
     Width = 738
     Height = 387
-    ActivePage = tbPedido
+    ActivePage = tbPesquisa
     Align = alClient
     TabOrder = 0
     object tbPesquisa: TTabSheet
@@ -89,20 +89,20 @@ object frmPedido: TfrmPedido
           TabOrder = 1
         end
       end
-      object DBGrid1: TDBGrid
+      object strgridPedidos: TStringGrid
         Left = 0
         Top = 49
         Width = 730
         Height = 269
         Align = alClient
+        ColCount = 3
+        DefaultColWidth = 100
+        DefaultRowHeight = 21
         DrawingStyle = gdsGradient
-        ReadOnly = True
+        FixedCols = 0
+        RowCount = 2
         TabOrder = 2
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = clWindowText
-        TitleFont.Height = -11
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
+        ExplicitTop = 51
       end
     end
     object tbPedido: TTabSheet
