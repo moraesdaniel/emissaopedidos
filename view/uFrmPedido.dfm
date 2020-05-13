@@ -16,7 +16,7 @@ object frmPedido: TfrmPedido
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object PageControl1: TPageControl
+  object pgPedido: TPageControl
     Left = 0
     Top = 0
     Width = 738
@@ -103,7 +103,8 @@ object frmPedido: TfrmPedido
         DefaultRowHeight = 21
         DrawingStyle = gdsGradient
         FixedCols = 0
-        RowCount = 2
+        RowCount = 1
+        FixedRows = 0
         TabOrder = 2
         ExplicitTop = 51
       end
@@ -156,6 +157,7 @@ object frmPedido: TfrmPedido
           Height = 25
           Caption = 'I&ncluir'
           TabOrder = 4
+          OnClick = btnIncluirClick
         end
         object edtQuantidade: TEdit
           Left = 353
@@ -238,18 +240,10 @@ object frmPedido: TfrmPedido
           Time = 0.375276527774985900
           TabOrder = 1
         end
-        object btnIniciar: TButton
-          Left = 647
-          Top = 20
-          Width = 75
-          Height = 25
-          Caption = '&Iniciar'
-          TabOrder = 3
-        end
         object edtCliente: TLabeledEdit
           Left = 194
           Top = 22
-          Width = 445
+          Width = 528
           Height = 21
           EditLabel.Width = 33
           EditLabel.Height = 13
@@ -275,6 +269,7 @@ object frmPedido: TfrmPedido
           Height = 25
           Caption = '&Cancelar'
           TabOrder = 0
+          OnClick = btnCancelarClick
         end
         object btnGravar: TButton
           Left = 89
@@ -284,12 +279,13 @@ object frmPedido: TfrmPedido
           Caption = '&Gravar'
           TabOrder = 1
         end
-        object Edit1: TEdit
+        object edtValorTotalPedido: TEdit
           Left = 601
           Top = 10
           Width = 121
           Height = 21
           Alignment = taRightJustify
+          Enabled = False
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -11
@@ -312,8 +308,11 @@ object frmPedido: TfrmPedido
         DefaultRowHeight = 21
         DrawingStyle = gdsGradient
         FixedCols = 0
+        RowCount = 1
+        FixedRows = 0
         TabOrder = 3
         OnDrawCell = strgridItensDrawCell
+        OnSelectCell = strgridItensSelectCell
         ExplicitTop = 101
       end
     end

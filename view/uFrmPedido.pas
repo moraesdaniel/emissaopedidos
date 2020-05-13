@@ -13,7 +13,7 @@ type
   TAcao = (actNovo, actAlterar);
 
   TfrmPedido = class(TForm)
-    PageControl1: TPageControl;
+    pgPedido: TPageControl;
     tbPesquisa: TTabSheet;
     tbPedido: TTabSheet;
     Panel2: TPanel;
@@ -33,13 +33,12 @@ type
     Label2: TLabel;
     edtNumero: TLabeledEdit;
     dtpData: TDateTimePicker;
-    btnIniciar: TButton;
     edtCliente: TLabeledEdit;
     pnlRodape: TPanel;
     cbxItem: TComboBox;
     btnCancelar: TButton;
     btnGravar: TButton;
-    Edit1: TEdit;
+    edtValorTotalPedido: TEdit;
     Label4: TLabel;
     edtValorTotalItem: TEdit;
     Label5: TLabel;
@@ -59,12 +58,19 @@ type
     procedure FormCreate(Sender: TObject);
     procedure btnNovoClick(Sender: TObject);
     procedure btnAlterarClick(Sender: TObject);
+    procedure btnCancelarClick(Sender: TObject);
+    procedure btnIncluirClick(Sender: TObject);
+    procedure strgridItensSelectCell(Sender: TObject; ACol, ARow: Integer;
+      var CanSelect: Boolean);
   private
     FFormatando: Boolean;
     oFuncoes: TFuncoes;
     procedure CarregarItens;
     procedure ConfigurarGridItens;
     procedure ConfigurarGridPedidos;
+    procedure IniciarNovoPedido;
+    procedure InicializarTela;
+    procedure IncluirItemNoPedido;
     { Private declarations }
   public
     { Public declarations }
@@ -126,7 +132,42 @@ end;
 procedure TfrmPedido.FormShow(Sender: TObject);
 begin
   oFuncoes := TFuncoes.Create;
-  CarregarItens;
+  InicializarTela();
+end;
+
+procedure TfrmPedido.IncluirItemNoPedido;
+var
+  iIndiceItem, iIndiceNovaLinha: Integer;
+begin
+  iIndiceItem := cbxItem.ItemIndex - 1;
+  strgridItens.RowCount := strgridItens.RowCount + 1;
+  iIndiceNovaLinha := strgridItens.RowCount - 1;
+  strgridItens.Cells[0, iIndiceNovaLinha] := IntToStr(listaItens[iIndiceItem].ID);
+  strgridItens.Cells[1, iIndiceNovaLinha] := listaItens[iIndiceItem].Descricao;
+  strgridItens.Cells[2, iIndiceNovaLinha] := edtQuantidade.Text;
+  strgridItens.Cells[3, iIndiceNovaLinha] := edtValorUnitario.Text;
+  strgridItens.Cells[4, iIndiceNovaLinha] := edtValorTotalItem.Text;
+end;
+
+procedure TfrmPedido.InicializarTela;
+begin
+  tbPesquisa.TabVisible := False;
+  tbPedido.TabVisible := False;
+  pgPedido.ActivePage := tbPesquisa;
+end;
+
+procedure TfrmPedido.IniciarNovoPedido;
+begin
+  edtNumero.Text := '';
+  dtpData.Date := Date;
+  edtCliente.Text := '';
+  CarregarItens();
+  edtQuantidade.Text := '0,00';
+  edtValorUnitario.Text := '0,00';
+  edtValorTotalItem.Text := '0,00';
+  edtValorTotalPedido.Text := '0,00';
+  strgridItens.RowCount := 1;
+  edtNumero.SetFocus;
 end;
 
 procedure TfrmPedido.strgridItensDrawCell(Sender: TObject; ACol, ARow: Integer;
@@ -151,6 +192,17 @@ begin
   end;
 end;
 
+procedure TfrmPedido.strgridItensSelectCell(Sender: TObject; ACol,
+  ARow: Integer; var CanSelect: Boolean);
+begin
+  if (ARow <> 0) And (ACol = 6) then begin
+    if MessageDlg('Deseja excluir o item'+sLineBreak+strgridItens.Cells[1, aRow]+'?',
+      mtConfirmation, [mbyes,mbno], 0) = mrYes then begin
+
+    end;
+  end;
+end;
+
 procedure TfrmPedido.AtualizarValorTotalItem;
 var
   dQuantidade, dValorUnitario, dValorTotal: Double;
@@ -166,9 +218,23 @@ begin
   oAcao := actAlterar;
 end;
 
+procedure TfrmPedido.btnCancelarClick(Sender: TObject);
+begin
+  if MessageDlg('Deseja cancelar a digitação do pedido e perder os dados que'+
+    ' não foram salvos?', mtConfirmation, [mbyes,mbno], 0) = mryes then
+  pgPedido.ActivePage := tbPesquisa;
+end;
+
+procedure TfrmPedido.btnIncluirClick(Sender: TObject);
+begin
+  IncluirItemNoPedido();
+end;
+
 procedure TfrmPedido.btnNovoClick(Sender: TObject);
 begin
   oAcao := actNovo;
+  pgPedido.ActivePage := tbPedido;
+  IniciarNovoPedido();
 end;
 
 procedure TfrmPedido.CarregarItens;
@@ -181,6 +247,7 @@ begin
   if not Assigned(listaItens) then begin
     listaItens := TObjectList<TItemModel>.Create;
   end;
+  listaItens.Clear;
 
   oItemController := TItemController.Create;
   try
