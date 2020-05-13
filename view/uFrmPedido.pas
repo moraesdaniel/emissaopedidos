@@ -7,7 +7,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Data.DB,
   Vcl.Grids, Vcl.DBGrids, Vcl.ComCtrls, Vcl.Mask, System.Math, System.StrUtils,
   uDmItem, uItemController, System.Generics.Collections, uItemModel, uFuncoes,
-  System.ImageList, Vcl.ImgList, uDmPedidoCab;
+  System.ImageList, Vcl.ImgList, uDmPedidoCab, uPedidoCabModel, uPedidoItemModel;
 
 type
   TAcao = (actNovo, actAlterar);
@@ -62,15 +62,19 @@ type
     procedure btnIncluirClick(Sender: TObject);
     procedure strgridItensSelectCell(Sender: TObject; ACol, ARow: Integer;
       var CanSelect: Boolean);
+    procedure btnGravarClick(Sender: TObject);
   private
     FFormatando: Boolean;
     oFuncoes: TFuncoes;
+    oPedidoCabModel: TPedidoCabModel;
+    iContProd: Integer;
     procedure CarregarItens;
     procedure ConfigurarGridItens;
     procedure ConfigurarGridPedidos;
     procedure IniciarNovoPedido;
     procedure InicializarTela;
     procedure IncluirItemNoPedido;
+    procedure AtualizarItensPedidoTela;
     { Private declarations }
   public
     { Public declarations }
@@ -137,16 +141,26 @@ end;
 
 procedure TfrmPedido.IncluirItemNoPedido;
 var
-  iIndiceItem, iIndiceNovaLinha: Integer;
+  oPedidoItem: TPedidoItemModel;
 begin
-  iIndiceItem := cbxItem.ItemIndex - 1;
-  strgridItens.RowCount := strgridItens.RowCount + 1;
-  iIndiceNovaLinha := strgridItens.RowCount - 1;
-  strgridItens.Cells[0, iIndiceNovaLinha] := IntToStr(listaItens[iIndiceItem].ID);
-  strgridItens.Cells[1, iIndiceNovaLinha] := listaItens[iIndiceItem].Descricao;
-  strgridItens.Cells[2, iIndiceNovaLinha] := edtQuantidade.Text;
-  strgridItens.Cells[3, iIndiceNovaLinha] := edtValorUnitario.Text;
-  strgridItens.Cells[4, iIndiceNovaLinha] := edtValorTotalItem.Text;
+  oPedidoItem := TPedidoItemModel.Create;
+  oPedidoItem.IDItem := listaItens[cbxItem.ItemIndex - 1].ID;
+  oPedidoItem.Descricao := listaItens[cbxItem.ItemIndex - 1].Descricao;
+  oPedidoItem.Quantidade := StrToFloat(ReplaceStr(edtQuantidade.Text, '.', ''));
+  oPedidoItem.ValorUnitario := StrToFloat(ReplaceStr(edtValorUnitario.Text, '.', ''));
+  try
+    if oPedidoCabModel.AdicionarItem(oPedidoItem) >= 0 then begin
+      cbxItem.ItemIndex := 0;
+      edtQuantidade.Text := '0,00';
+      edtValorUnitario.Text := '0,00';
+      edtValorTotalItem.Text := '0,00';
+      cbxItem.SetFocus;
+    end else begin
+      MessageDlg('Não foi possível adicionar este item!', mtWarning, [mbok], 0);
+    end;
+  finally
+    FreeAndNil(oPedidoItem);
+  end;
 end;
 
 procedure TfrmPedido.InicializarTela;
@@ -168,6 +182,9 @@ begin
   edtValorTotalPedido.Text := '0,00';
   strgridItens.RowCount := 1;
   edtNumero.SetFocus;
+  if Assigned(oPedidoCabModel) then
+    FreeAndNil(oPedidoCabModel);
+  oPedidoCabModel := TPedidoCabModel.Create;
 end;
 
 procedure TfrmPedido.strgridItensDrawCell(Sender: TObject; ACol, ARow: Integer;
@@ -203,6 +220,25 @@ begin
   end;
 end;
 
+procedure TfrmPedido.AtualizarItensPedidoTela;
+var
+  iNovaLinha, iCont: Integer;
+  dValorTotalItem: Double;
+begin
+  strgridItens.RowCount := 1;
+  for iCont := 0 to oPedidoCabModel.ListaItensPedido.Count - 1 do begin
+    iNovaLinha := strgridItens.RowCount;
+    strgridItens.RowCount := strgridItens.RowCount + 1;
+    strgridItens.Cells[0, iNovaLinha] := IntToStr(oPedidoCabModel.ListaItensPedido[iCont].IDItem);
+    strgridItens.Cells[1, iNovaLinha] := oPedidoCabModel.ListaItensPedido[iCont].Descricao;
+    strgridItens.Cells[2, iNovaLinha] := FloatToStrF(oPedidoCabModel.ListaItensPedido[iCont].Quantidade, ffNumber, 11, 2);
+    strgridItens.Cells[3, iNovaLinha] := FloatToStrF(oPedidoCabModel.ListaItensPedido[iCont].ValorUnitario, ffNumber, 11, 2);
+    dValorTotalItem := oPedidoCabModel.ListaItensPedido[iCont].Quantidade * oPedidoCabModel.ListaItensPedido[iCont].ValorUnitario;
+    dValorTotalItem := SimpleRoundTo(dValorTotalItem, -2);
+    strgridItens.Cells[4, iNovaLinha] := FloatToStrF(dValorTotalItem, ffNumber, 11, 2);
+  end;
+end;
+
 procedure TfrmPedido.AtualizarValorTotalItem;
 var
   dQuantidade, dValorUnitario, dValorTotal: Double;
@@ -225,9 +261,22 @@ begin
   pgPedido.ActivePage := tbPesquisa;
 end;
 
+procedure TfrmPedido.btnGravarClick(Sender: TObject);
+var
+  iContador: Integer;
+  sMsg: String;
+begin
+  sMsg := '';
+  for iContador := 0 to oPedidoCabModel.ListaItensPedido.Count - 1  do begin
+    sMsg := sMsg + IntToStr(oPedidoCabModel.ListaItensPedido[iContador].IDItem)+'/';
+  end;
+  ShowMessage(sMsg);
+end;
+
 procedure TfrmPedido.btnIncluirClick(Sender: TObject);
 begin
   IncluirItemNoPedido();
+  AtualizarItensPedidoTela();
 end;
 
 procedure TfrmPedido.btnNovoClick(Sender: TObject);

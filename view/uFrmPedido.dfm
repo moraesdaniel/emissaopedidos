@@ -21,11 +21,15 @@ object frmPedido: TfrmPedido
     Top = 0
     Width = 738
     Height = 387
-    ActivePage = tbPesquisa
+    ActivePage = tbPedido
     Align = alClient
     TabOrder = 0
     object tbPesquisa: TTabSheet
       Caption = 'tbPesquisa'
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Panel2: TPanel
         Left = 0
         Top = 318
@@ -106,12 +110,15 @@ object frmPedido: TfrmPedido
         RowCount = 1
         FixedRows = 0
         TabOrder = 2
-        ExplicitTop = 51
       end
     end
     object tbPedido: TTabSheet
       Caption = 'tbPedido'
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object pnlDigitacaoItem: TPanel
         Left = 0
         Top = 51
@@ -151,7 +158,7 @@ object frmPedido: TfrmPedido
           Caption = 'Valor Total'
         end
         object btnIncluir: TButton
-          Left = 647
+          Left = 645
           Top = 20
           Width = 75
           Height = 25
@@ -278,6 +285,7 @@ object frmPedido: TfrmPedido
           Height = 25
           Caption = '&Gravar'
           TabOrder = 1
+          OnClick = btnGravarClick
         end
         object edtValorTotalPedido: TEdit
           Left = 601
@@ -313,7 +321,6 @@ object frmPedido: TfrmPedido
         TabOrder = 3
         OnDrawCell = strgridItensDrawCell
         OnSelectCell = strgridItensSelectCell
-        ExplicitTop = 101
       end
     end
   end
