@@ -12,6 +12,7 @@ object frmPedido: TfrmPedido
   Font.Style = []
   OldCreateOrder = False
   OnClose = FormClose
+  OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -42,6 +43,7 @@ object frmPedido: TfrmPedido
           Height = 25
           Caption = 'Novo'
           TabOrder = 0
+          OnClick = btnNovoClick
         end
         object btnAlterar: TButton
           Left = 89
@@ -50,6 +52,7 @@ object frmPedido: TfrmPedido
           Height = 25
           Caption = 'Alterar'
           TabOrder = 1
+          OnClick = btnAlterarClick
         end
         object btnExcluir: TButton
           Left = 170

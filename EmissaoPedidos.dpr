@@ -11,7 +11,8 @@ uses
   uFrmPedido in 'view\uFrmPedido.pas' {frmPedido},
   uPedidoCabModel in 'model\uPedidoCabModel.pas',
   uPedidoItemModel in 'model\uPedidoItemModel.pas',
-  uFuncoes in 'control\uFuncoes.pas';
+  uFuncoes in 'control\uFuncoes.pas',
+  uDmPedidoCab in 'dao\uDmPedidoCab.pas' {DmPedidoCab: TDataModule};
 
 {$R *.res}
 

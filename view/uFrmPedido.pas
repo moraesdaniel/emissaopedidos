@@ -7,9 +7,11 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Data.DB,
   Vcl.Grids, Vcl.DBGrids, Vcl.ComCtrls, Vcl.Mask, System.Math, System.StrUtils,
   uDmItem, uItemController, System.Generics.Collections, uItemModel, uFuncoes,
-  System.ImageList, Vcl.ImgList;
+  System.ImageList, Vcl.ImgList, uDmPedidoCab;
 
 type
+  TAcao = (actNovo, actAlterar);
+
   TfrmPedido = class(TForm)
     PageControl1: TPageControl;
     tbPesquisa: TTabSheet;
@@ -54,6 +56,9 @@ type
     procedure edtValorUnitarioExit(Sender: TObject);
     procedure strgridItensDrawCell(Sender: TObject; ACol, ARow: Integer;
       Rect: TRect; State: TGridDrawState);
+    procedure FormCreate(Sender: TObject);
+    procedure btnNovoClick(Sender: TObject);
+    procedure btnAlterarClick(Sender: TObject);
   private
     FFormatando: Boolean;
     oFuncoes: TFuncoes;
@@ -67,6 +72,8 @@ type
 
 var
   frmPedido: TfrmPedido;
+  listaItens: TObjectList<TItemModel>;
+  oAcao: TAcao;
 
 implementation
 
@@ -109,12 +116,17 @@ begin
   frmPedido := nil;
 end;
 
+procedure TfrmPedido.FormCreate(Sender: TObject);
+begin
+  ConfigurarGridItens;
+  ConfigurarGridPedidos;
+  DmPedidoCab := TDmPedidoCab.Create(nil);
+end;
+
 procedure TfrmPedido.FormShow(Sender: TObject);
 begin
   oFuncoes := TFuncoes.Create;
   CarregarItens;
-  ConfigurarGridItens;
-  ConfigurarGridPedidos;
 end;
 
 procedure TfrmPedido.strgridItensDrawCell(Sender: TObject; ACol, ARow: Integer;
@@ -149,14 +161,27 @@ begin
   edtValorTotalItem.Text := FloatToStrF(dValorTotal, ffNumber, 11, 2);
 end;
 
+procedure TfrmPedido.btnAlterarClick(Sender: TObject);
+begin
+  oAcao := actAlterar;
+end;
+
+procedure TfrmPedido.btnNovoClick(Sender: TObject);
+begin
+  oAcao := actNovo;
+end;
+
 procedure TfrmPedido.CarregarItens;
 var
   oItemController: TItemController;
-  listaItens: TObjectList<TItemModel>;
   oItemModel: TItemModel;
 begin
   DmItem := TDmItem.Create(nil);
-  listaItens := TObjectList<TItemModel>.Create;
+
+  if not Assigned(listaItens) then begin
+    listaItens := TObjectList<TItemModel>.Create;
+  end;
+
   oItemController := TItemController.Create;
   try
     oItemController.BuscarItensCadastrados(listaItens);
@@ -167,7 +192,6 @@ begin
     cbxItem.ItemIndex := 0;
   finally
     FreeAndNil(oItemController);
-    FreeAndNil(listaItens);
     FreeAndNil(DmItem);
   end;
 end;
