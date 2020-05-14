@@ -1,6 +1,7 @@
 object frmPedido: TfrmPedido
   Left = 0
   Top = 0
+  ActiveControl = pgPedido
   Caption = '.: Pedido :.'
   ClientHeight = 387
   ClientWidth = 738
@@ -13,6 +14,7 @@ object frmPedido: TfrmPedido
   OldCreateOrder = False
   OnClose = FormClose
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -26,10 +28,6 @@ object frmPedido: TfrmPedido
     TabOrder = 0
     object tbPesquisa: TTabSheet
       Caption = 'tbPesquisa'
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Panel2: TPanel
         Left = 0
         Top = 318
@@ -115,10 +113,6 @@ object frmPedido: TfrmPedido
     object tbPedido: TTabSheet
       Caption = 'tbPedido'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object pnlDigitacaoItem: TPanel
         Left = 0
         Top = 51
@@ -128,46 +122,46 @@ object frmPedido: TfrmPedido
         BevelOuter = bvNone
         Color = cl3DLight
         ParentBackground = False
-        TabOrder = 0
-        object Label1: TLabel
-          Left = 387
+        TabOrder = 1
+        object lblQuantidade: TLabel
+          Left = 324
           Top = 6
           Width = 56
           Height = 13
           Caption = 'Quantidade'
         end
-        object Label3: TLabel
-          Left = 477
+        object lblValorUnitario: TLabel
+          Left = 414
           Top = 6
           Width = 64
           Height = 13
           Caption = 'Valor Unit'#225'rio'
         end
-        object Label4: TLabel
+        object lblItem: TLabel
           Left = 8
           Top = 6
           Width = 22
           Height = 13
           Caption = 'Item'
         end
-        object Label5: TLabel
-          Left = 588
+        object lblValorTotalItem: TLabel
+          Left = 519
           Top = 6
           Width = 51
           Height = 13
           Caption = 'Valor Total'
         end
-        object btnIncluir: TButton
-          Left = 645
+        object btnIncluirAlterar: TButton
+          Left = 655
           Top = 20
-          Width = 75
+          Width = 65
           Height = 25
           Caption = 'I&ncluir'
           TabOrder = 4
-          OnClick = btnIncluirClick
+          OnClick = btnIncluirAlterarClick
         end
         object edtQuantidade: TEdit
-          Left = 353
+          Left = 290
           Top = 22
           Width = 90
           Height = 21
@@ -179,7 +173,7 @@ object frmPedido: TfrmPedido
           OnExit = edtQuantidadeExit
         end
         object edtValorUnitario: TEdit
-          Left = 451
+          Left = 388
           Top = 22
           Width = 90
           Height = 21
@@ -193,13 +187,13 @@ object frmPedido: TfrmPedido
         object cbxItem: TComboBox
           Left = 8
           Top = 22
-          Width = 337
+          Width = 274
           Height = 21
           TabOrder = 0
           Text = 'cbxItem'
         end
         object edtValorTotalItem: TEdit
-          Left = 549
+          Left = 486
           Top = 22
           Width = 90
           Height = 21
@@ -207,6 +201,15 @@ object frmPedido: TfrmPedido
           Enabled = False
           TabOrder = 3
           Text = '0,00'
+        end
+        object btnCancelarItem: TButton
+          Left = 584
+          Top = 20
+          Width = 65
+          Height = 25
+          Caption = 'C&ancelar'
+          TabOrder = 5
+          OnClick = btnCancelarItemClick
         end
       end
       object pnlCabecalho: TPanel
@@ -218,8 +221,8 @@ object frmPedido: TfrmPedido
         BevelOuter = bvNone
         Color = clScrollBar
         ParentBackground = False
-        TabOrder = 1
-        object Label2: TLabel
+        TabOrder = 0
+        object lblData: TLabel
           Left = 86
           Top = 6
           Width = 23
@@ -227,7 +230,7 @@ object frmPedido: TfrmPedido
           Caption = 'Data'
         end
         object edtNumero: TLabeledEdit
-          Left = 8
+          Left = 10
           Top = 22
           Width = 70
           Height = 21
@@ -268,7 +271,20 @@ object frmPedido: TfrmPedido
         BevelOuter = bvNone
         Color = clScrollBar
         ParentBackground = False
-        TabOrder = 2
+        TabOrder = 3
+        object lblValorTotalPedido: TLabel
+          Left = 559
+          Top = 14
+          Width = 36
+          Height = 13
+          Caption = 'TOTAL'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
         object btnCancelar: TButton
           Left = 8
           Top = 8
@@ -280,12 +296,11 @@ object frmPedido: TfrmPedido
         end
         object btnGravar: TButton
           Left = 89
-          Top = 8
+          Top = 6
           Width = 75
           Height = 25
           Caption = '&Gravar'
           TabOrder = 1
-          OnClick = btnGravarClick
         end
         object edtValorTotalPedido: TEdit
           Left = 601
@@ -318,7 +333,7 @@ object frmPedido: TfrmPedido
         FixedCols = 0
         RowCount = 1
         FixedRows = 0
-        TabOrder = 3
+        TabOrder = 2
         OnDrawCell = strgridItensDrawCell
         OnSelectCell = strgridItensSelectCell
       end

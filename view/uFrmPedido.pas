@@ -10,7 +10,7 @@ uses
   System.ImageList, Vcl.ImgList, uDmPedidoCab, uPedidoCabModel, uPedidoItemModel;
 
 type
-  TAcao = (actNovo, actAlterar);
+  TAcao = (actNovo, actAlterar, actAlterarItem, actNone);
 
   TfrmPedido = class(TForm)
     pgPedido: TPageControl;
@@ -24,13 +24,13 @@ type
     btnAlterar: TButton;
     btnExcluir: TButton;
     pnlDigitacaoItem: TPanel;
-    btnIncluir: TButton;
+    btnIncluirAlterar: TButton;
     edtQuantidade: TEdit;
-    Label1: TLabel;
-    Label3: TLabel;
+    lblQuantidade: TLabel;
+    lblValorUnitario: TLabel;
     edtValorUnitario: TEdit;
     pnlCabecalho: TPanel;
-    Label2: TLabel;
+    lblData: TLabel;
     edtNumero: TLabeledEdit;
     dtpData: TDateTimePicker;
     edtCliente: TLabeledEdit;
@@ -39,18 +39,19 @@ type
     btnCancelar: TButton;
     btnGravar: TButton;
     edtValorTotalPedido: TEdit;
-    Label4: TLabel;
+    lblItem: TLabel;
     edtValorTotalItem: TEdit;
-    Label5: TLabel;
+    lblValorTotalItem: TLabel;
     strgridItens: TStringGrid;
     imgList: TImageList;
     strgridPedidos: TStringGrid;
+    btnCancelarItem: TButton;
+    lblValorTotalPedido: TLabel;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure edtQuantidadeChange(Sender: TObject);
     procedure edtValorUnitarioChange(Sender: TObject);
     procedure edtNumeroKeyPress(Sender: TObject; var Key: Char);
     procedure FormShow(Sender: TObject);
-    procedure AtualizarValorTotalItem;
     procedure edtQuantidadeExit(Sender: TObject);
     procedure edtValorUnitarioExit(Sender: TObject);
     procedure strgridItensDrawCell(Sender: TObject; ACol, ARow: Integer;
@@ -59,22 +60,28 @@ type
     procedure btnNovoClick(Sender: TObject);
     procedure btnAlterarClick(Sender: TObject);
     procedure btnCancelarClick(Sender: TObject);
-    procedure btnIncluirClick(Sender: TObject);
+    procedure btnIncluirAlterarClick(Sender: TObject);
     procedure strgridItensSelectCell(Sender: TObject; ACol, ARow: Integer;
       var CanSelect: Boolean);
-    procedure btnGravarClick(Sender: TObject);
+    procedure btnCancelarItemClick(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     FFormatando: Boolean;
     oFuncoes: TFuncoes;
     oPedidoCabModel: TPedidoCabModel;
     iContProd: Integer;
-    procedure CarregarItens;
+    procedure CarregarItensCadastrados;
     procedure ConfigurarGridItens;
     procedure ConfigurarGridPedidos;
     procedure IniciarNovoPedido;
     procedure InicializarTela;
     procedure IncluirItemNoPedido;
     procedure AtualizarItensPedidoTela;
+    procedure LimparPainelDigitacaoItem;
+    procedure LimparPainelCabecalho;
+    procedure AlterarItemNoPedido;
+    function BuscarCadastroItem(iIdItem: Integer) : Integer;
+    function CalcularValorTotalItem() : Double;
     { Private declarations }
   public
     { Public declarations }
@@ -101,7 +108,7 @@ end;
 
 procedure TfrmPedido.edtQuantidadeExit(Sender: TObject);
 begin
-  AtualizarValorTotalItem();
+  edtValorTotalItem.Text := FloatToStrF(CalcularValorTotalItem, ffNumber, 11, 2);
 end;
 
 procedure TfrmPedido.edtValorUnitarioChange(Sender: TObject);
@@ -116,51 +123,32 @@ end;
 
 procedure TfrmPedido.edtValorUnitarioExit(Sender: TObject);
 begin
-  AtualizarValorTotalItem();
+  edtValorTotalItem.Text := FloatToStrF(CalcularValorTotalItem, ffNumber, 11, 2);
 end;
 
 procedure TfrmPedido.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  FreeAndNil(oFuncoes);
   Action := caFree;
   frmPedido := nil;
 end;
 
 procedure TfrmPedido.FormCreate(Sender: TObject);
 begin
-  ConfigurarGridItens;
-  ConfigurarGridPedidos;
+  oFuncoes := TFuncoes.Create;
   DmPedidoCab := TDmPedidoCab.Create(nil);
+end;
+
+procedure TfrmPedido.FormDestroy(Sender: TObject);
+begin
+  FreeAndNil(oFuncoes);
+  FreeAndNil(DmPedidoCab);
 end;
 
 procedure TfrmPedido.FormShow(Sender: TObject);
 begin
-  oFuncoes := TFuncoes.Create;
+  ConfigurarGridItens;
+  ConfigurarGridPedidos;
   InicializarTela();
-end;
-
-procedure TfrmPedido.IncluirItemNoPedido;
-var
-  oPedidoItem: TPedidoItemModel;
-begin
-  oPedidoItem := TPedidoItemModel.Create;
-  oPedidoItem.IDItem := listaItens[cbxItem.ItemIndex - 1].ID;
-  oPedidoItem.Descricao := listaItens[cbxItem.ItemIndex - 1].Descricao;
-  oPedidoItem.Quantidade := StrToFloat(ReplaceStr(edtQuantidade.Text, '.', ''));
-  oPedidoItem.ValorUnitario := StrToFloat(ReplaceStr(edtValorUnitario.Text, '.', ''));
-  try
-    if oPedidoCabModel.AdicionarItem(oPedidoItem) >= 0 then begin
-      cbxItem.ItemIndex := 0;
-      edtQuantidade.Text := '0,00';
-      edtValorUnitario.Text := '0,00';
-      edtValorTotalItem.Text := '0,00';
-      cbxItem.SetFocus;
-    end else begin
-      MessageDlg('Não foi possível adicionar este item!', mtWarning, [mbok], 0);
-    end;
-  finally
-    FreeAndNil(oPedidoItem);
-  end;
 end;
 
 procedure TfrmPedido.InicializarTela;
@@ -170,15 +158,58 @@ begin
   pgPedido.ActivePage := tbPesquisa;
 end;
 
-procedure TfrmPedido.IniciarNovoPedido;
+procedure TfrmPedido.IncluirItemNoPedido;
+var
+  oPedidoItem: TPedidoItemModel;
+  sMsg: String;
+begin
+  oPedidoItem := TPedidoItemModel.Create;
+  oPedidoItem.IDItem := listaItens[cbxItem.ItemIndex - 1].ID;
+  oPedidoItem.Descricao := listaItens[cbxItem.ItemIndex - 1].Descricao;
+  oPedidoItem.Quantidade := StrToFloat(ReplaceStr(edtQuantidade.Text, '.', ''));
+  oPedidoItem.ValorUnitario := StrToFloat(ReplaceStr(edtValorUnitario.Text, '.', ''));
+
+  try
+    if oPedidoItem.ValidarDadosObrigatorios(sMsg) < 0 then begin
+      MessageDlg(sMsg, mtWarning, [mbok], 0);
+      Exit;
+    end;
+
+    if oPedidoCabModel.AdicionarItem(oPedidoItem) >= 0 then begin
+      LimparPainelDigitacaoItem();
+      cbxItem.SetFocus;
+      edtValorTotalPedido.Text := FloatToStrF(oPedidoCabModel.ValorTotalPedido, ffNumber, 11, 2);
+    end else begin
+      MessageDlg('Não foi possível adicionar este item!', mtWarning, [mbok], 0);
+    end;
+  finally
+    FreeAndNil(oPedidoItem);
+  end;
+end;
+
+procedure TfrmPedido.LimparPainelCabecalho;
 begin
   edtNumero.Text := '';
   dtpData.Date := Date;
   edtCliente.Text := '';
-  CarregarItens();
+end;
+
+procedure TfrmPedido.LimparPainelDigitacaoItem;
+begin
+  cbxItem.Enabled := True;
+  cbxItem.ItemIndex := 0;
   edtQuantidade.Text := '0,00';
   edtValorUnitario.Text := '0,00';
   edtValorTotalItem.Text := '0,00';
+  btnIncluirAlterar.Caption := '&Incluir';
+  strgridItens.Enabled := True;
+end;
+
+procedure TfrmPedido.IniciarNovoPedido;
+begin
+  LimparPainelCabecalho();
+  LimparPainelDigitacaoItem();
+  CarregarItensCadastrados();
   edtValorTotalPedido.Text := '0,00';
   strgridItens.RowCount := 1;
   edtNumero.SetFocus;
@@ -193,6 +224,7 @@ var
   oBMP: TBitmap;
   iEixoX, iEixoY: Integer;
 begin
+  //Incluindo imagens nas colunas que servirão como botões
   if (ARow <> 0) And (ACol in [5,6]) then begin
     oBMP := TBitmap.Create;
     try
@@ -211,12 +243,63 @@ end;
 
 procedure TfrmPedido.strgridItensSelectCell(Sender: TObject; ACol,
   ARow: Integer; var CanSelect: Boolean);
+var
+  iIndiceItem: Integer;
 begin
-  if (ARow <> 0) And (ACol = 6) then begin
-    if MessageDlg('Deseja excluir o item'+sLineBreak+strgridItens.Cells[1, aRow]+'?',
-      mtConfirmation, [mbyes,mbno], 0) = mrYes then begin
-
+  if (ARow <> 0) then begin
+    //Botão alteração
+    if (ACol = 5) then begin
+      iIndiceItem := BuscarCadastroItem(StrToInt(strgridItens.Cells[0, ARow]));
+      if (iIndiceItem >= 0) then begin
+        cbxItem.ItemIndex := iIndiceItem + 1;
+        cbxItem.Enabled := False;
+        edtQuantidade.Text := strgridItens.Cells[2, ARow];
+        edtValorUnitario.Text := strgridItens.Cells[3, ARow];
+        edtValorTotalItem.Text := FloatToStrF(CalcularValorTotalItem, ffNumber, 11, 2);
+        strgridItens.Enabled := False;
+        btnIncluirAlterar.Caption := 'A&lterar';
+        edtQuantidade.SetFocus;
+        oAcao := actAlterarItem;
+      end;
     end;
+
+    //Botão exclusão
+    if (ACol = 6) then begin
+      if MessageDlg('Deseja excluir o item'+sLineBreak+strgridItens.Cells[1, aRow]+'?',
+        mtConfirmation, [mbyes,mbno], 0) = mrYes then begin
+        oPedidoCabModel.RemoverItem(StrToInt(strgridItens.Cells[0, ARow]));
+        AtualizarItensPedidoTela();
+        edtValorTotalPedido.Text := FloatToStrF(oPedidoCabModel.ValorTotalPedido, ffNumber, 11, 2);
+      end;
+    end;
+  end;
+end;
+
+procedure TfrmPedido.AlterarItemNoPedido;
+var
+  oPedidoItem: TPedidoItemModel;
+  sMsg: String;
+begin
+  oPedidoItem := TPedidoItemModel.Create;
+  oPedidoItem.IDItem := listaItens[cbxItem.ItemIndex - 1].ID;
+  oPedidoItem.Quantidade := StrToFloat(ReplaceStr(edtQuantidade.Text, '.', ''));
+  oPedidoItem.ValorUnitario := StrToFloat(ReplaceStr(edtValorUnitario.Text, '.', ''));
+
+  try
+    if oPedidoItem.ValidarDadosObrigatorios(sMsg) < 0 then begin
+      MessageDlg(sMsg, mtWarning, [mbok], 0);
+      Exit;
+    end;
+
+    if oPedidoCabModel.AlterarItem(oPedidoItem) >= 0 then begin
+      LimparPainelDigitacaoItem();
+      cbxItem.SetFocus;
+      edtValorTotalPedido.Text := FloatToStrF(oPedidoCabModel.ValorTotalPedido, ffNumber, 11, 2);
+    end else begin
+      MessageDlg('Não foi possível alterar este item!', mtWarning, [mbok], 0);
+    end;
+  finally
+    FreeAndNil(oPedidoItem);
   end;
 end;
 
@@ -239,16 +322,6 @@ begin
   end;
 end;
 
-procedure TfrmPedido.AtualizarValorTotalItem;
-var
-  dQuantidade, dValorUnitario, dValorTotal: Double;
-begin
-  dQuantidade := StrToFloat(ReplaceStr(edtQuantidade.Text, '.', ''));
-  dValorUnitario := StrToFloat(ReplaceStr(edtValorUnitario.Text, '.', ''));
-  dValorTotal := SimpleRoundTo(dQuantidade * dValorUnitario, -2);
-  edtValorTotalItem.Text := FloatToStrF(dValorTotal, ffNumber, 11, 2);
-end;
-
 procedure TfrmPedido.btnAlterarClick(Sender: TObject);
 begin
   oAcao := actAlterar;
@@ -258,25 +331,39 @@ procedure TfrmPedido.btnCancelarClick(Sender: TObject);
 begin
   if MessageDlg('Deseja cancelar a digitação do pedido e perder os dados que'+
     ' não foram salvos?', mtConfirmation, [mbyes,mbno], 0) = mryes then
+  FreeAndNil(oPedidoCabModel);
   pgPedido.ActivePage := tbPesquisa;
 end;
 
-procedure TfrmPedido.btnGravarClick(Sender: TObject);
-var
-  iContador: Integer;
-  sMsg: String;
+procedure TfrmPedido.btnCancelarItemClick(Sender: TObject);
 begin
-  sMsg := '';
-  for iContador := 0 to oPedidoCabModel.ListaItensPedido.Count - 1  do begin
-    sMsg := sMsg + IntToStr(oPedidoCabModel.ListaItensPedido[iContador].IDItem)+'/';
-  end;
-  ShowMessage(sMsg);
+  LimparPainelDigitacaoItem();
+  cbxItem.SetFocus;
+  oAcao := actNone;
 end;
 
-procedure TfrmPedido.btnIncluirClick(Sender: TObject);
+procedure TfrmPedido.btnIncluirAlterarClick(Sender: TObject);
 begin
-  IncluirItemNoPedido();
+  if oAcao = actAlterarItem then begin
+    AlterarItemNoPedido();
+  end else begin
+    if cbxItem.ItemIndex < 1 then begin
+      MessageDlg('Selecione um item para continuar!', mtWarning, [mbok], 0);
+      Exit;
+    end;
+
+    if oPedidoCabModel.BuscarItemNoPedido(listaItens[cbxItem.ItemIndex - 1].ID) >= 0 then begin
+      if MessageDlg('Este item já está no pedido, deseja alterá-lo?', mtConfirmation, [mbyes,mbno], 0) = mrYes then begin
+        AlterarItemNoPedido();
+      end;
+    end else begin
+      IncluirItemNoPedido();
+    end;
+  end;
+
   AtualizarItensPedidoTela();
+
+  oAcao := actNone;
 end;
 
 procedure TfrmPedido.btnNovoClick(Sender: TObject);
@@ -286,7 +373,29 @@ begin
   IniciarNovoPedido();
 end;
 
-procedure TfrmPedido.CarregarItens;
+function TfrmPedido.BuscarCadastroItem(iIdItem: Integer): Integer;
+var
+  iIndice: Integer;
+begin
+  Result := -1;
+  for iIndice := 0 to listaItens.Count - 1 do begin
+    if (listaItens[iIndice].ID = iIdItem) then begin
+      Result := iIndice;
+      Exit;
+    end;
+  end;
+end;
+
+function TfrmPedido.CalcularValorTotalItem: Double;
+var
+  dQuantidade, dValorUnitario: Double;
+begin
+  dQuantidade := StrToFloat(ReplaceStr(edtQuantidade.Text, '.', ''));
+  dValorUnitario := StrToFloat(ReplaceStr(edtValorUnitario.Text, '.', ''));
+  Result := dQuantidade * dValorUnitario;
+end;
+
+procedure TfrmPedido.CarregarItensCadastrados;
 var
   oItemController: TItemController;
   oItemModel: TItemModel;

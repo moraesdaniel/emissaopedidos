@@ -11,6 +11,8 @@ type
       FQuantidade: Double;
       FValorUnitario: Double;
       FDescricao: String;
+    public
+      function ValidarDadosObrigatorios(out sMsg: String) : Integer;
     published
       property IDPed: Integer read FIDPed write FIDPed;
       property IDItem: Integer read FIDItem write FIDItem;
@@ -21,5 +23,22 @@ type
   end;
 
 implementation
+
+{ TPedidoItemModel }
+
+function TPedidoItemModel.ValidarDadosObrigatorios(out sMsg: String): Integer;
+begin
+  if (FQuantidade <= 0) then begin
+    sMsg := 'A quantidade deve ser maior que zero!';
+    Result := -1;
+    Exit;
+  end;
+
+  if (FValorUnitario <= 0) then begin
+    sMsg := 'O valor unitário deve ser maior que zero!';
+    Result := -1;
+    Exit;
+  end;
+end;
 
 end.
