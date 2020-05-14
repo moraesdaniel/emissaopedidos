@@ -13,7 +13,8 @@ uses
   uPedidoItemModel in 'model\uPedidoItemModel.pas',
   uFuncoes in 'control\uFuncoes.pas' {,
   uDmPedidoCab in 'dao\uDmPedidoCab.pas'},
-  uDmPedidoCab in 'dao\uDmPedidoCab.pas' {DmPedidoCab: TDataModule};
+  uDmPedidoCab in 'dao\uDmPedidoCab.pas' {DmPedidoCab: TDataModule},
+  uPedidoCabController in 'control\uPedidoCabController.pas';
 
 {$R *.res}
 

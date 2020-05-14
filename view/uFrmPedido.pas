@@ -7,7 +7,8 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Data.DB,
   Vcl.Grids, Vcl.DBGrids, Vcl.ComCtrls, Vcl.Mask, System.Math, System.StrUtils,
   uDmItem, uItemController, System.Generics.Collections, uItemModel, uFuncoes,
-  System.ImageList, Vcl.ImgList, uDmPedidoCab, uPedidoCabModel, uPedidoItemModel;
+  System.ImageList, Vcl.ImgList, uDmPedidoCab, uPedidoCabModel, uPedidoItemModel,
+  uPedidoCabController;
 
 type
   TAcao = (actNovo, actAlterar, actAlterarItem, actNone);
@@ -47,6 +48,7 @@ type
     strgridPedidos: TStringGrid;
     btnCancelarItem: TButton;
     lblValorTotalPedido: TLabel;
+    procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure edtQuantidadeChange(Sender: TObject);
     procedure edtValorUnitarioChange(Sender: TObject);
@@ -56,7 +58,6 @@ type
     procedure edtValorUnitarioExit(Sender: TObject);
     procedure strgridItensDrawCell(Sender: TObject; ACol, ARow: Integer;
       Rect: TRect; State: TGridDrawState);
-    procedure FormCreate(Sender: TObject);
     procedure btnNovoClick(Sender: TObject);
     procedure btnAlterarClick(Sender: TObject);
     procedure btnCancelarClick(Sender: TObject);
@@ -65,6 +66,7 @@ type
       var CanSelect: Boolean);
     procedure btnCancelarItemClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure btnGravarClick(Sender: TObject);
   private
     FFormatando: Boolean;
     oFuncoes: TFuncoes;
@@ -206,6 +208,8 @@ begin
 end;
 
 procedure TfrmPedido.IniciarNovoPedido;
+var
+  oPedidoCabController: TPedidoCabController;
 begin
   LimparPainelCabecalho();
   LimparPainelDigitacaoItem();
@@ -216,6 +220,13 @@ begin
   if Assigned(oPedidoCabModel) then
     FreeAndNil(oPedidoCabModel);
   oPedidoCabModel := TPedidoCabModel.Create;
+
+  oPedidoCabController := TPedidoCabController.Create;
+  try
+    oPedidoCabModel.IDPed := oPedidoCabController.GetCodigoNovoPedido();
+  finally
+    FreeAndNil(oPedidoCabController);
+  end;
 end;
 
 procedure TfrmPedido.strgridItensDrawCell(Sender: TObject; ACol, ARow: Integer;
@@ -340,6 +351,25 @@ begin
   LimparPainelDigitacaoItem();
   cbxItem.SetFocus;
   oAcao := actNone;
+end;
+
+procedure TfrmPedido.btnGravarClick(Sender: TObject);
+var
+  sMsg: String;
+begin
+  if Trim(edtNumero.Text) = '' then begin
+    MessageDlg('Por favor, informe o número do pedido!', mtInformation, [mbok], 0);
+    Exit;
+  end;
+
+  oPedidoCabModel.Numero := StrToInt(edtNumero.Text);
+  oPedidoCabModel.DtEmissao := dtpData.Date;
+  oPedidoCabModel.Cliente := edtCliente.Text;
+
+  if oPedidoCabModel.ValidarDados(sMsg) = -1 then begin
+    MessageDlg(sMsg, mtWarning, [mbok], 0);
+    Exit;
+  end;
 end;
 
 procedure TfrmPedido.btnIncluirAlterarClick(Sender: TObject);

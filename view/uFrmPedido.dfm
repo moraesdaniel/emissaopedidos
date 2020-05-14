@@ -23,7 +23,7 @@ object frmPedido: TfrmPedido
     Top = 0
     Width = 738
     Height = 387
-    ActivePage = tbPedido
+    ActivePage = tbPesquisa
     Align = alClient
     TabOrder = 0
     object tbPesquisa: TTabSheet
@@ -258,7 +258,7 @@ object frmPedido: TfrmPedido
           EditLabel.Width = 33
           EditLabel.Height = 13
           EditLabel.Caption = 'Cliente'
-          MaxLength = 200
+          MaxLength = 100
           TabOrder = 2
         end
       end
@@ -296,11 +296,12 @@ object frmPedido: TfrmPedido
         end
         object btnGravar: TButton
           Left = 89
-          Top = 6
+          Top = 8
           Width = 75
           Height = 25
           Caption = '&Gravar'
           TabOrder = 1
+          OnClick = btnGravarClick
         end
         object edtValorTotalPedido: TEdit
           Left = 601

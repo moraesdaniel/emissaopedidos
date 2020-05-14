@@ -16,6 +16,7 @@ type
     FValorTotalPedido: Double;
     procedure ReordenarSequenciaItens;
     procedure AtualizarValorTotalPedido;
+    procedure SetCliente(const Value: String);
   public
     constructor Create;
     destructor Destroy; override;
@@ -23,11 +24,12 @@ type
     function RemoverItem(iIdItem: Integer) : Integer;
     function BuscarItemNoPedido(iIdItem: Integer) : Integer;
     function AlterarItem(oPedidoItem: TPedidoItemModel) : Integer;
+    function ValidarDados(out sMsg: String): Integer;
   published
     property IDPed: Integer read FIDPed write FIDPed;
     property DtEmissao: TDate read FDtEmissao write FDtEmissao;
     property Numero: Integer read FNumero write FNumero;
-    property Cliente: String read FCliente write FCliente;
+    property Cliente: String read FCliente write SetCliente;
     property ListaItensPedido: TObjectList<TPedidoItemModel>
       read FListaItensPedido write FListaItensPedido;
     property ValorTotalPedido: double read FValorTotalPedido
@@ -63,6 +65,48 @@ var
 begin
   for iCont := 0 to FListaItensPedido.Count - 1 do
     FListaItensPedido[iCont].IDItemSeq := iCont + 1;
+end;
+
+procedure TPedidoCabModel.SetCliente(const Value: String);
+begin
+  if Length(Value) > 100 then begin
+    raise EArgumentException.Create('A identificação do cliente deve ter no máximo 100 caracteres.');
+  end;
+
+  FCliente := Value;
+end;
+
+function TPedidoCabModel.ValidarDados(out sMsg: String): Integer;
+begin
+  if FNumero = 0 then begin
+    sMsg := 'O número do pedido deve ser maior que zero!';
+    Result := -1;
+    Exit;
+  end;
+
+  if FDtEmissao > Date() then begin
+    sMsg := 'A data de emissão do pedido não pode ser maior que a data atual!';
+    Result := -1;
+    Exit;
+  end;
+
+  if Length(FCliente) < 5 then begin
+    sMsg := 'Digite um nome de cliente com pelo menos 5 caracteres!';
+    Result := -1;
+    Exit;
+  end;
+
+  if Length(FCliente) > 100 then begin
+    sMsg := 'A identificação do cliente deve ter no máximo 100 caracteres!';
+    Result := -1;
+    Exit;
+  end;
+
+  if FListaItensPedido.Count = 0 then begin
+    sMsg := 'O pedido não contém nenhum item!';
+    Result := -1;
+    Exit;
+  end;
 end;
 
 function TPedidoCabModel.AlterarItem(oPedidoItem: TPedidoItemModel): Integer;
