@@ -11,10 +11,11 @@ uses
   uFrmPedido in 'view\uFrmPedido.pas' {frmPedido},
   uPedidoCabModel in 'model\uPedidoCabModel.pas',
   uPedidoItemModel in 'model\uPedidoItemModel.pas',
-  uFuncoes in 'control\uFuncoes.pas' {,
-  uDmPedidoCab in 'dao\uDmPedidoCab.pas'},
+  uFuncoes in 'control\uFuncoes.pas',
   uDmPedidoCab in 'dao\uDmPedidoCab.pas' {DmPedidoCab: TDataModule},
-  uPedidoCabController in 'control\uPedidoCabController.pas';
+  uPedidoCabController in 'control\uPedidoCabController.pas',
+  uDmPedidoItem in 'dao\uDmPedidoItem.pas' {DmPedidoItem: TDataModule},
+  uPedidoItemController in 'control\uPedidoItemController.pas';
 
 {$R *.res}
 

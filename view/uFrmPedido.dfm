@@ -23,7 +23,7 @@ object frmPedido: TfrmPedido
     Top = 0
     Width = 738
     Height = 387
-    ActivePage = tbPesquisa
+    ActivePage = tbPedido
     Align = alClient
     TabOrder = 0
     object tbPesquisa: TTabSheet
