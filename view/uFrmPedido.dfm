@@ -12,6 +12,7 @@ object frmPedido: TfrmPedido
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  Position = poScreenCenter
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -23,7 +24,7 @@ object frmPedido: TfrmPedido
     Top = 0
     Width = 738
     Height = 387
-    ActivePage = tbPedido
+    ActivePage = tbPesquisa
     Align = alClient
     TabOrder = 0
     object tbPesquisa: TTabSheet

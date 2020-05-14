@@ -2,13 +2,18 @@ unit uFrmPedido;
 
 interface
 
+{
+* AJUSTAR oAcao POIS ESTA DANDO PROBLEMAS
+* FAZER FOREIGN KEY
+}
+
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Data.DB,
   Vcl.Grids, Vcl.DBGrids, Vcl.ComCtrls, Vcl.Mask, System.Math, System.StrUtils,
   uDmItem, uItemController, System.Generics.Collections, uItemModel, uFuncoes,
   System.ImageList, Vcl.ImgList, uDmPedidoCab, uPedidoCabModel, uPedidoItemModel,
-  uPedidoCabController;
+  uPedidoCabController, uDmPedidoItem, uPedidoItemController;
 
 type
   TAcao = (actNovo, actAlterar, actAlterarItem, actNone);
@@ -84,6 +89,9 @@ type
     procedure AlterarItemNoPedido;
     function BuscarCadastroItem(iIdItem: Integer) : Integer;
     function CalcularValorTotalItem() : Double;
+    procedure InserirPedido;
+    procedure AtualizarPedido;
+    function ValidarDadosPedido: Integer;
     { Private declarations }
   public
     { Public declarations }
@@ -138,12 +146,14 @@ procedure TfrmPedido.FormCreate(Sender: TObject);
 begin
   oFuncoes := TFuncoes.Create;
   DmPedidoCab := TDmPedidoCab.Create(nil);
+  DmPedidoItem := TDmPedidoItem.Create(nil);
 end;
 
 procedure TfrmPedido.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(oFuncoes);
   FreeAndNil(DmPedidoCab);
+  FreeAndNil(DmPedidoItem);
 end;
 
 procedure TfrmPedido.FormShow(Sender: TObject);
@@ -229,6 +239,43 @@ begin
   end;
 end;
 
+procedure TfrmPedido.InserirPedido;
+var
+  sMsg: String;
+  oPedidoCabController: TPedidoCabController;
+  oPedidoItemController: TPedidoItemController;
+  iCont: Integer;
+begin
+  if ValidarDadosPedido() = -1 then begin
+    Exit;
+  end;
+
+  oPedidoCabController := TPedidoCabController.Create;
+  oPedidoItemController := TPedidoItemController.Create;
+
+  try
+    //Inserindo cabeçalho
+    if oPedidoCabController.Inserir(oPedidoCabModel, sMsg) then begin
+      //Inserindo produtos
+      for iCont := 0 to oPedidoCabModel.ListaItensPedido.Count - 1 do begin
+        if Not oPedidoItemController.Inserir(oPedidoCabModel.ListaItensPedido[iCont], sMsg) then begin
+          MessageDlg(sMsg, mtError, [mbok], 0);
+          oPedidoCabController.Excluir(oPedidoCabModel.IDPed, sMsg);
+          Exit;
+        end;
+      end;
+      FreeAndNil(oPedidoCabModel);
+      pgPedido.ActivePage := tbPesquisa;
+      MessageDlg('Pedido salvo com sucesso!', mtInformation, [mbok], 0);
+    end else begin
+      MessageDlg(sMsg, mtError, [mbok], 0);
+    end;
+  finally
+    FreeAndNil(oPedidoItemController);
+    FreeAndNil(oPedidoCabController);
+  end;
+end;
+
 procedure TfrmPedido.strgridItensDrawCell(Sender: TObject; ACol, ARow: Integer;
   Rect: TRect; State: TGridDrawState);
 var
@@ -286,6 +333,27 @@ begin
   end;
 end;
 
+function TfrmPedido.ValidarDadosPedido: Integer;
+var
+  sMsg: String;
+begin
+  if Trim(edtNumero.Text) = '' then begin
+    MessageDlg('Por favor, informe o número do pedido!', mtInformation, [mbok], 0);
+    Result := -1;
+    Exit;
+  end;
+
+  oPedidoCabModel.Numero := StrToInt(edtNumero.Text);
+  oPedidoCabModel.DtEmissao := dtpData.Date;
+  oPedidoCabModel.Cliente := edtCliente.Text;
+
+  if oPedidoCabModel.ValidarDados(sMsg) = -1 then begin
+    MessageDlg(sMsg, mtWarning, [mbok], 0);
+    Result := -1;
+    Exit;
+  end;
+end;
+
 procedure TfrmPedido.AlterarItemNoPedido;
 var
   oPedidoItem: TPedidoItemModel;
@@ -333,6 +401,43 @@ begin
   end;
 end;
 
+procedure TfrmPedido.AtualizarPedido;
+var
+  sMsg: String;
+  oPedidoCabController: TPedidoCabController;
+  oPedidoItemController: TPedidoItemController;
+  iCont: Integer;
+begin
+  if ValidarDadosPedido() = -1 then begin
+    Exit;
+  end;
+
+  oPedidoCabController := TPedidoCabController.Create;
+  oPedidoItemController := TPedidoItemController.Create;
+
+  try
+    //Alterar cabeçalho
+    if oPedidoCabController.Atualizar(oPedidoCabModel, sMsg) then begin
+      if oPedidoItemController.ExcluirTodos(oPedidoCabModel.IDPed, sMsg) then begin
+        //Inserindo produtos
+        for iCont := 0 to oPedidoCabModel.ListaItensPedido.Count - 1 do begin
+          if Not oPedidoItemController.Inserir(oPedidoCabModel.ListaItensPedido[iCont], sMsg) then begin
+            MessageDlg(sMsg, mtError, [mbok], 0);
+            Exit;
+          end;
+        end;
+      end;
+      FreeAndNil(oPedidoCabModel);
+      pgPedido.ActivePage := tbPesquisa;
+    end else begin
+      MessageDlg(sMsg, mtError, [mbok], 0);
+    end;
+  finally
+    FreeAndNil(oPedidoItemController);
+    FreeAndNil(oPedidoCabController);
+  end;
+end;
+
 procedure TfrmPedido.btnAlterarClick(Sender: TObject);
 begin
   oAcao := actAlterar;
@@ -354,21 +459,11 @@ begin
 end;
 
 procedure TfrmPedido.btnGravarClick(Sender: TObject);
-var
-  sMsg: String;
 begin
-  if Trim(edtNumero.Text) = '' then begin
-    MessageDlg('Por favor, informe o número do pedido!', mtInformation, [mbok], 0);
-    Exit;
-  end;
-
-  oPedidoCabModel.Numero := StrToInt(edtNumero.Text);
-  oPedidoCabModel.DtEmissao := dtpData.Date;
-  oPedidoCabModel.Cliente := edtCliente.Text;
-
-  if oPedidoCabModel.ValidarDados(sMsg) = -1 then begin
-    MessageDlg(sMsg, mtWarning, [mbok], 0);
-    Exit;
+  if oAcao = actNovo then begin
+    InserirPedido();
+  end else begin
+    AtualizarPedido();
   end;
 end;
 

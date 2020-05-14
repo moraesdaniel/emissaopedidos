@@ -4,7 +4,8 @@ interface
 
 uses
   System.SysUtils, System.Classes, uDmConexao, Data.FMTBcd, Data.SqlExpr,
-  Datasnap.Provider, Data.DB, Datasnap.DBClient, uPedidoCabModel;
+  Datasnap.Provider, Data.DB, Datasnap.DBClient, uPedidoCabModel,
+  uPedidoItemController;
 
 type
   TDmPedidoCab = class(TDataModule)
@@ -46,7 +47,7 @@ begin
         Result := False;
       end;
     end;
-  end;
+  end; //With SQLInserir
 end;
 
 function TDmPedidoCab.Atualizar(oPedidoCabModel: TPedidoCabModel;

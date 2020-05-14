@@ -53,7 +53,7 @@ begin
     ParamByName('ID_ITEM').AsInteger := oPedidoItemModel.IDItem;
     ParamByName('ID_ITEMSEQ').AsInteger := oPedidoItemModel.IDItemSeq;
     ParamByName('QUANTIDADE').AsFloat := oPedidoItemModel.Quantidade;
-    ParamByName('ID_ITEM').AsFloat := oPedidoItemModel.ValorUnitario;
+    ParamByName('VALORUNIT').AsFloat := oPedidoItemModel.ValorUnitario;
     try
       ExecSQL();
       Result := True;

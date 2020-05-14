@@ -4,33 +4,33 @@ object DmPedidoItem: TDmPedidoItem
   Width = 325
   object SQLInserir: TSQLDataSet
     CommandText = 
-      'INSERT INTO PEDIDOCAB '#13#10#9'(ID_PED, ID_ITEM, ID_ITEMSEQ, QUANTIDAD' +
-      'E, VALORUNIT) '#13#10'VALUES '#13#10#9'(:ID_PED, :ID_ITEM, :ID_ITEMSEQ, :QUAN' +
-      'TIDADE, :VALORUNIT)'
+      'INSERT INTO PEDIDOITEM '#13#10#9'(ID_PED, ID_ITEM, ID_ITEMSEQ, QUANTIDA' +
+      'DE, VALORUNIT) '#13#10'VALUES '#13#10#9'(:ID_PED, :ID_ITEM, :ID_ITEMSEQ, :QUA' +
+      'NTIDADE, :VALORUNIT)'
     MaxBlobSize = -1
     Params = <
       item
-        DataType = ftInteger
+        DataType = ftUnknown
         Name = 'ID_PED'
         ParamType = ptInput
       end
       item
-        DataType = ftInteger
+        DataType = ftUnknown
         Name = 'ID_ITEM'
         ParamType = ptInput
       end
       item
-        DataType = ftInteger
+        DataType = ftUnknown
         Name = 'ID_ITEMSEQ'
         ParamType = ptInput
       end
       item
-        DataType = ftFloat
+        DataType = ftUnknown
         Name = 'QUANTIDADE'
         ParamType = ptInput
       end
       item
-        DataType = ftFloat
+        DataType = ftUnknown
         Name = 'VALORUNIT'
         ParamType = ptInput
       end>
