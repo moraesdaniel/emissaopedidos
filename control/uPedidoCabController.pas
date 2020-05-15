@@ -14,6 +14,8 @@ type
       function Atualizar(oPedidoCabModel: TPedidoCabModel; out sErro: String): Boolean;
       function BuscarCabecalhoPedidosPeloCliente(sCliente: String;
         oListaPedidos: TObjectList<TPedidoCabModel>): Integer;
+      function CarregarPedido(iIDPed: Integer;
+        out oPedidoCabModel: TPedidoCabModel): Boolean;
   end;
 
 implementation
@@ -30,6 +32,12 @@ function TPedidoCabController.BuscarCabecalhoPedidosPeloCliente(
   sCliente: String; oListaPedidos: TObjectList<TPedidoCabModel>): Integer;
 begin
   Result := DmPedidoCab.BuscarCabecalhoPedidosPeloCliente(sCliente, oListaPedidos);
+end;
+
+function TPedidoCabController.CarregarPedido(iIDPed: Integer;
+  out oPedidoCabModel: TPedidoCabModel): Boolean;
+begin
+  Result := DmPedidoCab.CarregarPedido(iIDPed, oPedidoCabModel);
 end;
 
 function TPedidoCabController.Excluir(iIDPed: Integer;

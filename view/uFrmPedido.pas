@@ -91,6 +91,8 @@ type
     function ValidarDadosPedido: Integer;
     procedure MostrarPedidosSalvos(sCliente: String);
     procedure ExcluirPedido;
+    procedure AlterarPedido;
+    procedure CarregarCabecalhoPedido(oPedidoCab: TPedidoCabModel);
     { Private declarations }
   public
     { Public declarations }
@@ -398,6 +400,42 @@ begin
   end;
 end;
 
+procedure TfrmPedido.AlterarPedido;
+var
+  oPedidoCabController: TPedidoCabController;
+  iIDPed: Integer;
+begin
+  if strgridPedidos.Row < 1 then begin
+    MessageDlg('Por favor, selecione o pedido a ser alterado!', mtInformation, [mbok], 0);
+    Exit;
+  end;
+
+  iIDPed := StrToInt(strgridPedidos.Cells[0, strgridPedidos.Row]);
+
+  oPedidoCabController := TPedidoCabController.Create;
+
+  if Assigned(oPedidoCabModel) then
+    FreeAndNil(oPedidoCabModel);
+  oPedidoCabModel := TPedidoCabModel.Create;
+
+  try
+    if oPedidoCabController.CarregarPedido(iIDPed, oPedidoCabModel) then begin
+      oPedidoCabModel.AtualizarValorTotalPedido();
+      CarregarCabecalhoPedido(oPedidoCabModel);
+      LimparPainelDigitacaoItem();
+      CarregarItensCadastrados();
+      edtValorTotalPedido.Text := FloatToStrF(oPedidoCabModel.ValorTotalPedido, ffNumber, 11, 2);
+      AtualizarItensPedidoTela();
+      pgPedido.ActivePage := tbPedido;
+      edtNumero.SetFocus;
+    end else begin
+      MessageDlg('Problemas ao carregar o pedido!', mtError, [mbok], 0);
+    end;
+  finally
+    FreeAndNIl(oPedidoCabController);
+  end;
+end;
+
 procedure TfrmPedido.AtualizarItensPedidoTela;
 var
   iNovaLinha, iCont: Integer;
@@ -443,6 +481,7 @@ end;
 procedure TfrmPedido.btnAlterarClick(Sender: TObject);
 begin
   oAcao := actAlterarPedido;
+  AlterarPedido();
 end;
 
 procedure TfrmPedido.btnCancelarClick(Sender: TObject);
@@ -560,6 +599,13 @@ begin
   dQuantidade := StrToFloat(ReplaceStr(edtQuantidade.Text, '.', ''));
   dValorUnitario := StrToFloat(ReplaceStr(edtValorUnitario.Text, '.', ''));
   Result := dQuantidade * dValorUnitario;
+end;
+
+procedure TfrmPedido.CarregarCabecalhoPedido(oPedidoCab: TPedidoCabModel);
+begin
+  edtNumero.Text := IntToStr(oPedidoCab.Numero);
+  dtpData.Date := oPedidoCab.DtEmissao;
+  edtCliente.Text := oPedidoCab.Cliente;
 end;
 
 procedure TfrmPedido.CarregarItensCadastrados;

@@ -35,22 +35,35 @@ function TDmPedidoItem.CarregarItensDoPedido(iIDPed: Integer;
 var
   sqlItens: TSQLDataSet;
   iContador: Integer;
+  sScript: String;
 begin
   sqlItens := TSQLDataSet.Create(nil);
   iContador := 0;
   try
     with sqlItens do begin
       SQLConnection := DmConexao.SQLConexao;
-      CommandText := 'select id_item, id_itemseq, quantidade, valorunit '+
-        'from pedidoitem where id_ped = '+IntToStr(iIDPed);
+      sScript :=  'SELECT '+
+                  ' PI.ID_ITEM, PI.ID_ITEMSEQ, PI.QUANTIDADE, '+
+                  ' PI.VALORUNIT, IT.DESC_ITEM '+
+                  'FROM '+
+                  ' PEDIDOITEM PI '+
+                  ' LEFT OUTER JOIN ITEM IT ON '+
+                  '   IT.ID_ITEM = PI.ID_ITEM '+
+                  'WHERE '+
+                  ' PI.ID_PED = '+IntToStr(iIDPed)+' '+
+                  'ORDER BY '+
+                  ' PI.ID_ITEMSEQ';
+      CommandText := sScript;
       Open;
       while not eof do begin
         oListaItens.Add(TPedidoItemModel.Create);
         oListaItens[iContador].IDPed := iIDPed;
         oListaItens[iContador].IDItem := FieldByName('id_item').AsInteger;
+        oListaItens[iContador].Descricao := FieldByName('desc_item').AsString;
         oListaItens[iContador].IDItemSeq := FieldByName('id_itemseq').AsInteger;
         oListaItens[iContador].Quantidade := FieldByName('quantidade').AsFloat;
         oListaItens[iContador].ValorUnitario := FieldByName('valorunit').AsFloat;
+        Inc(iContador);
         next;
       end;
     end;

@@ -15,7 +15,6 @@ type
     FListaItensPedido: TObjectList<TPedidoItemModel>;
     FValorTotalPedido: Double;
     procedure ReordenarSequenciaItens;
-    procedure AtualizarValorTotalPedido;
     procedure SetCliente(const Value: String);
   public
     constructor Create;
@@ -25,6 +24,7 @@ type
     function BuscarItemNoPedido(iIdItem: Integer) : Integer;
     function AlterarItem(oPedidoItem: TPedidoItemModel) : Integer;
     function ValidarDados(out sMsg: String): Integer;
+    procedure AtualizarValorTotalPedido;
   published
     property IDPed: Integer read FIDPed write FIDPed;
     property DtEmissao: TDate read FDtEmissao write FDtEmissao;

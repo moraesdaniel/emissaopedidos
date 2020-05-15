@@ -5,7 +5,7 @@ interface
 uses
   System.SysUtils, System.Classes, uDmConexao, Data.FMTBcd, Data.SqlExpr,
   Datasnap.Provider, Data.DB, Datasnap.DBClient, uPedidoCabModel,
-  uPedidoItemController, System.Generics.Collections;
+  uPedidoItemController, System.Generics.Collections, uPedidoItemModel;
 
 type
   TDmPedidoCab = class(TDataModule)
@@ -22,6 +22,9 @@ type
     function Atualizar(oPedidoCabModel: TPedidoCabModel; out sErro: String): Boolean;
     function BuscarCabecalhoPedidosPeloCliente(sCliente: String;
       oListaPedidos: TObjectList<TPedidoCabModel>): Integer;
+    function CarregarPedido(iIDPed: Integer;
+      out oPedidoCabModel: TPedidoCabModel): Boolean;
+    function CarregarItensNoPedido(oPedidoCabModel: TPedidoCabModel): Integer;
   end;
 
 var
@@ -158,6 +161,67 @@ begin
   finally
     Result := iContador;
     FreeAndNil(sqlCabPedidos);
+  end;
+end;
+
+function TDmPedidoCab.CarregarItensNoPedido(
+  oPedidoCabModel: TPedidoCabModel): Integer;
+var
+  oPedidoItemController: TPedidoItemController;
+  oListaItens: TObjectList<TPedidoItemModel>;
+  iIndice: Integer;
+begin
+  oPedidoItemController := TPedidoItemController.Create;
+  oListaItens := TObjectList<TPedidoItemModel>.Create;
+  try
+    if oPedidoItemController.CarregarItensDoPedido(oPedidoCabModel.IDPed, oListaItens) > 0 then begin
+      for iIndice := 0 to oListaItens.Count - 1 do begin
+        oPedidoCabModel.ListaItensPedido.Add(TPedidoItemModel.Create);
+        oPedidoCabModel.ListaItensPedido[iIndice].IDPed := oListaItens[iIndice].IDPed;
+        oPedidoCabModel.ListaItensPedido[iIndice].IDItem := oListaItens[iIndice].IDItem;
+        oPedidoCabModel.ListaItensPedido[iIndice].Descricao := oListaItens[iIndice].Descricao;
+        oPedidoCabModel.ListaItensPedido[iIndice].IDItemSeq := oListaItens[iIndice].IDItemSeq;
+        oPedidoCabModel.ListaItensPedido[iIndice].Quantidade := oListaItens[iIndice].Quantidade;
+        oPedidoCabModel.ListaItensPedido[iIndice].ValorUnitario := oListaItens[iIndice].ValorUnitario;
+      end;
+    end;
+  finally
+    Result := oListaItens.Count;
+    FreeAndNil(oPedidoItemController);
+    FreeAndNil(oListaItens);
+  end;
+end;
+
+function TDmPedidoCab.CarregarPedido(iIDPed: Integer;
+  out oPedidoCabModel: TPedidoCabModel): Boolean;
+var
+  sqlPedido: TSQLDataSet;
+begin
+  sqlPedido := TSQLDataSet.Create(nil);
+  try
+    with sqlPedido do begin
+      SQLConnection := DmConexao.SQLConexao;
+      CommandText := 'select id_ped, numero, dtemissao, cliente from pedidocab '+
+        'where id_ped = '+IntToStr(iIDPed);
+      Open;
+      First;
+      if RecordCount > 0 then begin
+        oPedidoCabModel.IDPed := iIDPed;
+        oPedidoCabModel.Numero := FieldByName('numero').AsInteger;
+        oPedidoCabModel.DtEmissao := FieldByName('dtemissao').AsDateTime;
+        oPedidoCabModel.Cliente := FieldByName('cliente').AsString;
+        if CarregarItensNoPedido(oPedidoCabModel) <= 0 then begin
+          Result := False;
+          Exit;
+        end;
+      end else begin
+        Result := False;
+        Exit;
+      end;
+      Result := True;
+    end;
+  finally
+    FreeAndNil(sqlPedido);
   end;
 end;
 
