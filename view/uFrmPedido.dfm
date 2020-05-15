@@ -24,7 +24,7 @@ object frmPedido: TfrmPedido
     Top = 0
     Width = 738
     Height = 387
-    ActivePage = tbPesquisa
+    ActivePage = tbPedido
     Align = alClient
     TabOrder = 0
     object tbPesquisa: TTabSheet
@@ -124,6 +124,7 @@ object frmPedido: TfrmPedido
         Color = cl3DLight
         ParentBackground = False
         TabOrder = 1
+        ExplicitTop = 49
         object lblQuantidade: TLabel
           Left = 324
           Top = 6
