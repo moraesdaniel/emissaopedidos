@@ -68,6 +68,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure btnGravarClick(Sender: TObject);
     procedure btnPesquisarClick(Sender: TObject);
+    procedure btnExcluirClick(Sender: TObject);
   private
     FFormatando: Boolean;
     oFuncoes: TFuncoes;
@@ -89,6 +90,7 @@ type
     procedure AtualizarPedido;
     function ValidarDadosPedido: Integer;
     procedure MostrarPedidosSalvos(sCliente: String);
+    procedure ExcluirPedido;
     { Private declarations }
   public
     { Public declarations }
@@ -131,6 +133,36 @@ end;
 procedure TfrmPedido.edtValorUnitarioExit(Sender: TObject);
 begin
   edtValorTotalItem.Text := FloatToStrF(CalcularValorTotalItem, ffNumber, 11, 2);
+end;
+
+procedure TfrmPedido.ExcluirPedido;
+var
+  iIDPed: Integer;
+  sErro: String;
+  oPedidoCabController: TPedidoCabController;
+begin
+  if strgridPedidos.Row < 1 then begin
+    MessageDlg('Selecione um pedido para ser excluído!', mtInformation, [mbok], 0);
+    Exit;
+  end;
+
+  iIDPed := StrToInt(strgridPedidos.Cells[0, strgridPedidos.Row]);
+
+  if MessageDlg('Deseja excluir o pedido '+IntToStr(iIDPed)+'?', mtConfirmation, [mbYes,mbNo], 0) = mrNo then begin
+    Exit;
+  end;
+
+  oPedidoCabController := TPedidoCabController.Create;
+  try
+    if oPedidoCabController.Excluir(iIDPed, sErro) then begin
+      MessageDlg('Pedido excluído com sucesso!', mtInformation, [mbok], 0);
+      MostrarPedidosSalvos(edtPesquisa.Text);
+    end else begin
+      MessageDlg(sErro, mtError, [mbok], 0);
+    end;
+  finally
+    FreeAndNil(oPedidoCabController);
+  end;
 end;
 
 procedure TfrmPedido.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -416,9 +448,12 @@ end;
 procedure TfrmPedido.btnCancelarClick(Sender: TObject);
 begin
   if MessageDlg('Deseja cancelar a digitação do pedido e perder os dados que'+
-    ' não foram salvos?', mtConfirmation, [mbyes,mbno], 0) = mryes then
-  FreeAndNil(oPedidoCabModel);
-  pgPedido.ActivePage := tbPesquisa;
+    ' não foram salvos?', mtWarning, [mbyes,mbno], 0) = mryes then begin
+    FreeAndNil(oPedidoCabModel);
+    pgPedido.ActivePage := tbPesquisa;
+    edtPesquisa.Text := '';
+    MostrarPedidosSalvos('');
+  end;
 end;
 
 procedure TfrmPedido.btnCancelarItemClick(Sender: TObject);
@@ -428,6 +463,11 @@ begin
   oAcaoItem := actInserirItem;
 end;
 
+procedure TfrmPedido.btnExcluirClick(Sender: TObject);
+begin
+  ExcluirPedido();
+end;
+
 procedure TfrmPedido.btnGravarClick(Sender: TObject);
 begin
   if oAcao = actNovoPedido then begin
@@ -435,6 +475,8 @@ begin
   end else begin
     AtualizarPedido();
   end;
+  edtPesquisa.Text := '';
+  MostrarPedidosSalvos('');
 end;
 
 procedure TfrmPedido.btnIncluirAlterarClick(Sender: TObject);

@@ -24,7 +24,7 @@ object frmPedido: TfrmPedido
     Top = 0
     Width = 738
     Height = 387
-    ActivePage = tbPesquisa
+    ActivePage = tbPedido
     Align = alClient
     TabOrder = 0
     object tbPesquisa: TTabSheet
@@ -64,6 +64,7 @@ object frmPedido: TfrmPedido
           Height = 25
           Caption = '&Excluir'
           TabOrder = 2
+          OnClick = btnExcluirClick
         end
       end
       object Panel1: TPanel
@@ -109,6 +110,7 @@ object frmPedido: TfrmPedido
         FixedCols = 0
         RowCount = 1
         FixedRows = 0
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSelect]
         TabOrder = 2
       end
     end

@@ -162,18 +162,35 @@ begin
 end;
 
 function TDmPedidoCab.Excluir(iIdPed: Integer; out sErro: String): Boolean;
+var
+  oPedidoItemController: TPedidoItemController;
+  oTransacao: TDBXTransaction;
 begin
-  with SQLExcluir do begin
-    ParamByName('ID_PED').AsInteger := iIdPed;
+  oPedidoItemController := TPedidoItemController.Create;
+  try
     try
-      ExecSQL();
+      oTransacao := DmConexao.SQLConexao.BeginTransaction;
+
+      //Excluindo itens
+      if not oPedidoItemController.ExcluirTodos(iIDPed, sErro) then begin
+        raise Exception.Create(sErro);
+      end;
+
+      //Excluindo cabeçalho
+      SQLExcluir.ParamByName('ID_PED').AsInteger := iIDPed;
+      SQLExcluir.ExecSQL();
+
+      DmConexao.SQLConexao.CommitFreeAndNil(oTransacao);
       Result := True;
     except on E: Exception do
       begin
         sErro := 'Erro ao excluir o pedido!' + sLineBreak + E.Message;
+        DmConexao.SQLConexao.RollbackFreeAndNil(oTransacao);
         Result := False;
       end;
     end;
+  finally
+    FreeAndNil(oPedidoItemController);
   end;
 end;
 
