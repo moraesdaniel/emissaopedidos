@@ -24,7 +24,7 @@ object frmPedido: TfrmPedido
     Top = 0
     Width = 738
     Height = 387
-    ActivePage = tbPedido
+    ActivePage = tbPesquisa
     Align = alClient
     TabOrder = 0
     object tbPesquisa: TTabSheet
@@ -44,7 +44,7 @@ object frmPedido: TfrmPedido
           Top = 8
           Width = 75
           Height = 25
-          Caption = 'Novo'
+          Caption = '&Novo'
           TabOrder = 0
           OnClick = btnNovoClick
         end
@@ -53,7 +53,7 @@ object frmPedido: TfrmPedido
           Top = 8
           Width = 75
           Height = 25
-          Caption = 'Alterar'
+          Caption = '&Alterar'
           TabOrder = 1
           OnClick = btnAlterarClick
         end
@@ -62,7 +62,7 @@ object frmPedido: TfrmPedido
           Top = 8
           Width = 75
           Height = 25
-          Caption = 'Excluir'
+          Caption = '&Excluir'
           TabOrder = 2
         end
       end
@@ -81,8 +81,9 @@ object frmPedido: TfrmPedido
           Top = 16
           Width = 75
           Height = 25
-          Caption = 'Pesquisar'
-          TabOrder = 0
+          Caption = '&Pesquisar'
+          TabOrder = 1
+          OnClick = btnPesquisarClick
         end
         object edtPesquisa: TLabeledEdit
           Left = 8
@@ -92,7 +93,7 @@ object frmPedido: TfrmPedido
           EditLabel.Width = 42
           EditLabel.Height = 13
           EditLabel.Caption = 'Pesquisa'
-          TabOrder = 1
+          TabOrder = 0
         end
       end
       object strgridPedidos: TStringGrid

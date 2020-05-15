@@ -5,13 +5,14 @@ interface
 uses
   System.SysUtils, System.Classes, uDmConexao, Data.FMTBcd, Data.SqlExpr,
   Datasnap.Provider, Data.DB, Datasnap.DBClient, uPedidoCabModel,
-  uPedidoItemController;
+  uPedidoItemController, System.Generics.Collections;
 
 type
   TDmPedidoCab = class(TDataModule)
     SQLInserir: TSQLDataSet;
     SQLAtualizar: TSQLDataSet;
     SQLExcluir: TSQLDataSet;
+    SQLBuscar: TSQLDataSet;
   private
     { Private declarations }
   public
@@ -19,6 +20,8 @@ type
     function Inserir(oPedidoCabModel: TPedidoCabModel; out sErro: String): Boolean;
     function Excluir(iIdPed: Integer; out sErro: String): Boolean;
     function Atualizar(oPedidoCabModel: TPedidoCabModel; out sErro: String): Boolean;
+    function BuscarCabecalhoPedidosPeloCliente(sCliente: String;
+      oListaPedidos: TObjectList<TPedidoCabModel>): Integer;
   end;
 
 var
@@ -119,6 +122,42 @@ begin
     finally
       FreeAndNil(oPedidoItemController);
     end;
+  end;
+end;
+
+function TDmPedidoCab.BuscarCabecalhoPedidosPeloCliente(sCliente: String;
+  oListaPedidos: TObjectList<TPedidoCabModel>): Integer;
+var
+  sqlCabPedidos: TSQLDataSet;
+  iContador: Integer;
+  sScript: String;
+begin
+  sqlCabPedidos := TSQLDataSet.Create(nil);
+  iContador := 0;
+  sScript := 'SELECT ID_PED, NUMERO, DTEMISSAO, CLIENTE FROM PEDIDOCAB ';
+  if Trim(sCliente) <> '' then begin
+    sScript := sScript + 'WHERE CLIENTE LIKE (''%'+sCliente+'%'') ';
+  end;
+  sScript := sScript + 'ORDER BY CLIENTE, ID_PED';
+
+  try
+    with sqlCabPedidos do begin
+      SQLConnection := DmConexao.SQLConexao;
+      CommandText := sScript;
+      Open;
+      while not eof do begin
+        oListaPedidos.Add(TPedidoCabModel.Create);
+        oListaPedidos[iContador].IDPed := FieldByName('ID_PED').AsInteger;
+        oListaPedidos[iContador].Numero := FieldByName('NUMERO').AsInteger;
+        oListaPedidos[iContador].Cliente := FieldByName('CLIENTE').AsString;
+        oListaPedidos[iContador].DtEmissao := FieldByName('DTEMISSAO').AsDateTime;
+        Inc(iContador);
+        Next;
+      end;
+    end;
+  finally
+    Result := iContador;
+    FreeAndNil(sqlCabPedidos);
   end;
 end;
 

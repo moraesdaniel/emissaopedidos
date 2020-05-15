@@ -75,4 +75,19 @@ object DmPedidoCab: TDmPedidoCab
     Left = 168
     Top = 8
   end
+  object SQLBuscar: TSQLDataSet
+    CommandText = 
+      'SELECT '#13#10#9'ID_PED,'#13#10#9'NUMERO,'#13#10#9'CLIENTE'#13#10'FROM '#13#10#9'PEDIDOCAB'#13#10'WHERE ' +
+      #13#10#9'CLIENTE LIKE (:CLIENTE)'#13#10'ORDER BY'#13#10#9'CLIENTE'
+    MaxBlobSize = -1
+    Params = <
+      item
+        DataType = ftString
+        Name = 'CLIENTE'
+        ParamType = ptInput
+      end>
+    SQLConnection = DmConexao.SQLConexao
+    Left = 280
+    Top = 32
+  end
 end

@@ -67,6 +67,7 @@ type
     procedure btnCancelarItemClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure btnGravarClick(Sender: TObject);
+    procedure btnPesquisarClick(Sender: TObject);
   private
     FFormatando: Boolean;
     oFuncoes: TFuncoes;
@@ -87,6 +88,7 @@ type
     procedure InserirPedido;
     procedure AtualizarPedido;
     function ValidarDadosPedido: Integer;
+    procedure MostrarPedidosSalvos(sCliente: String);
     { Private declarations }
   public
     { Public declarations }
@@ -156,6 +158,7 @@ begin
   ConfigurarGridItens;
   ConfigurarGridPedidos;
   InicializarTela();
+  MostrarPedidosSalvos('');
 end;
 
 procedure TfrmPedido.InicializarTela;
@@ -465,6 +468,11 @@ begin
   IniciarNovoPedido();
 end;
 
+procedure TfrmPedido.btnPesquisarClick(Sender: TObject);
+begin
+  MostrarPedidosSalvos(edtPesquisa.Text);
+end;
+
 function TfrmPedido.BuscarCadastroItem(iIdItem: Integer): Integer;
 var
   iIndice: Integer;
@@ -475,6 +483,31 @@ begin
       Result := iIndice;
       Exit;
     end;
+  end;
+end;
+
+procedure TfrmPedido.MostrarPedidosSalvos(sCliente: String);
+var
+  oPedidoCabController: TPedidoCabController;
+  oListaPedidos: TObjectList<TPedidoCabModel>;
+  iIndice, iNovaLinha: Integer;
+begin
+  oPedidoCabController := TPedidoCabController.Create;
+  oListaPedidos := TObjectList<TPedidoCabModel>.Create;
+  try
+    if oPedidoCabController.BuscarCabecalhoPedidosPeloCliente(sCliente, oListaPedidos) > 0 then begin
+      strgridPedidos.RowCount := 1;
+      for iIndice := 0 to oListaPedidos.Count - 1 do begin
+        iNovaLinha := strgridPedidos.RowCount;
+        strgridPedidos.RowCount := strgridPedidos.RowCount + 1;
+        strgridPedidos.Cells[0, iNovaLinha] := IntToStr(oListaPedidos[iIndice].IDPed);
+        strgridPedidos.Cells[1, iNovaLinha] := IntToStr(oListaPedidos[iIndice].Numero);
+        strgridPedidos.Cells[2, iNovaLinha] := oListaPedidos[iIndice].Cliente;
+      end;
+    end;
+  finally
+    FreeAndNil(oPedidoCabController);
+    FreeAndNil(oListaPedidos);
   end;
 end;
 
