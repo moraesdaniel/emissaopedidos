@@ -70,10 +70,9 @@ type
     procedure btnPesquisarClick(Sender: TObject);
     procedure btnExcluirClick(Sender: TObject);
   private
-    FFormatando: Boolean;
+    bFormatando: Boolean;
     oFuncoes: TFuncoes;
     oPedidoCabModel: TPedidoCabModel;
-    iContProd: Integer;
     procedure CarregarItensCadastrados;
     procedure ConfigurarGridItens;
     procedure ConfigurarGridPedidos;
@@ -84,8 +83,8 @@ type
     procedure LimparPainelDigitacaoItem;
     procedure LimparPainelCabecalho;
     procedure AlterarItemNoPedido;
-    function BuscarCadastroItem(iIdItem: Integer) : Integer;
-    function CalcularValorTotalItem() : Double;
+    function EncontrarCadastroItem(iIdItem: Integer): Integer;
+    function CalcularValorTotalItem(): Double;
     procedure InserirPedido;
     procedure AtualizarPedido;
     function ValidarDadosPedido: Integer;
@@ -109,11 +108,11 @@ implementation
 
 procedure TfrmPedido.edtQuantidadeChange(Sender: TObject);
 begin
-  if Not FFormatando then begin
-    FFormatando := True;
+  if Not bFormatando then begin
+    bFormatando := True;
     edtQuantidade.Text := oFuncoes.FormatarMoeda(edtQuantidade.Text);
     edtQuantidade.SelStart := Length(edtQuantidade.Text);
-    FFormatando := False;
+    bFormatando := False;
   end;
 end;
 
@@ -124,11 +123,11 @@ end;
 
 procedure TfrmPedido.edtValorUnitarioChange(Sender: TObject);
 begin
-  if Not FFormatando then begin
-    FFormatando := True;
+  if Not bFormatando then begin
+    bFormatando := True;
     edtValorUnitario.Text := oFuncoes.FormatarMoeda(edtValorUnitario.Text);
     edtValorUnitario.SelStart := Length(edtValorUnitario.Text);
-    FFormatando := False;
+    bFormatando := False;
   end;
 end;
 
@@ -325,7 +324,7 @@ begin
   if (ARow <> 0) then begin
     //Botão alteração
     if (ACol = 5) then begin
-      iIndiceItem := BuscarCadastroItem(StrToInt(strgridItens.Cells[0, ARow]));
+      iIndiceItem := EncontrarCadastroItem(StrToInt(strgridItens.Cells[0, ARow]));
       if (iIndiceItem >= 0) then begin
         cbxItem.ItemIndex := iIndiceItem + 1;
         cbxItem.Enabled := False;
@@ -414,8 +413,9 @@ begin
 
   oPedidoCabController := TPedidoCabController.Create;
 
-  if Assigned(oPedidoCabModel) then
+  if Assigned(oPedidoCabModel) then begin
     FreeAndNil(oPedidoCabModel);
+  end;
   oPedidoCabModel := TPedidoCabModel.Create;
 
   try
@@ -432,7 +432,7 @@ begin
       MessageDlg('Problemas ao carregar o pedido!', mtError, [mbok], 0);
     end;
   finally
-    FreeAndNIl(oPedidoCabController);
+    FreeAndNil(oPedidoCabController);
   end;
 end;
 
@@ -554,7 +554,7 @@ begin
   MostrarPedidosSalvos(edtPesquisa.Text);
 end;
 
-function TfrmPedido.BuscarCadastroItem(iIdItem: Integer): Integer;
+function TfrmPedido.EncontrarCadastroItem(iIdItem: Integer): Integer;
 var
   iIndice: Integer;
 begin
