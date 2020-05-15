@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils, System.Classes, uDmConexao, Data.FMTBcd, Data.DB,
-  Data.SqlExpr, uPedidoItemModel;
+  Data.SqlExpr, uPedidoItemModel, System.Generics.Collections;
 
 type
   TDmPedidoItem = class(TDataModule)
@@ -15,6 +15,8 @@ type
   public
     function Inserir(oPedidoItemModel: TPedidoItemModel; out sErro: String): Boolean;
     function ExcluirTodos(iIdPed: Integer; out sErro: String): Boolean;
+    function CarregarItensDoPedido(iIDPed: Integer;
+      out oListaItens: TObjectList<TPedidoItemModel>): Integer;
   end;
 
 var
@@ -27,6 +29,36 @@ implementation
 {$R *.dfm}
 
 { TDmPedidoItem }
+
+function TDmPedidoItem.CarregarItensDoPedido(iIDPed: Integer;
+  out oListaItens: TObjectList<TPedidoItemModel>): Integer;
+var
+  sqlItens: TSQLDataSet;
+  iContador: Integer;
+begin
+  sqlItens := TSQLDataSet.Create(nil);
+  iContador := 0;
+  try
+    with sqlItens do begin
+      SQLConnection := DmConexao.SQLConexao;
+      CommandText := 'select id_item, id_itemseq, quantidade, valorunit '+
+        'from pedidoitem where id_ped = '+IntToStr(iIDPed);
+      Open;
+      while not eof do begin
+        oListaItens.Add(TPedidoItemModel.Create);
+        oListaItens[iContador].IDPed := iIDPed;
+        oListaItens[iContador].IDItem := FieldByName('id_item').AsInteger;
+        oListaItens[iContador].IDItemSeq := FieldByName('id_itemseq').AsInteger;
+        oListaItens[iContador].Quantidade := FieldByName('quantidade').AsFloat;
+        oListaItens[iContador].ValorUnitario := FieldByName('valorunit').AsFloat;
+        next;
+      end;
+    end;
+  finally
+    FreeAndNil(sqlItens);
+    Result := iContador;
+  end;
+end;
 
 function TDmPedidoItem.ExcluirTodos(iIdPed: Integer;
   out sErro: String): Boolean;

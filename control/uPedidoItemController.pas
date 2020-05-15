@@ -3,7 +3,7 @@ unit uPedidoItemController;
 interface
 
 uses
-  uPedidoItemModel, uDmPedidoItem;
+  uPedidoItemModel, uDmPedidoItem, System.Generics.Collections;
 
 type
   TPedidoItemController = class
@@ -13,11 +13,19 @@ type
     function Inserir(oPedidoItemModel: TPedidoItemModel;
       out sErro: String): Boolean;
     function ExcluirTodos(iIDPed: Integer; out sErro: String): Boolean;
+    function CarregarItensDoPedido(iIDPed: Integer;
+      out oListaItens: TObjectList<TPedidoItemModel>): Integer;
   end;
 
 implementation
 
 { TPedidoItemController }
+
+function TPedidoItemController.CarregarItensDoPedido(iIDPed: Integer;
+  out oListaItens: TObjectList<TPedidoItemModel>): Integer;
+begin
+  Result := DmPedidoItem.CarregarItensDoPedido(iIDPed, oListaItens);
+end;
 
 function TPedidoItemController.ExcluirTodos(iIdPed: Integer;
   out sErro: String): Boolean;
