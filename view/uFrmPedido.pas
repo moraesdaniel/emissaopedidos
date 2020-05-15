@@ -8,7 +8,7 @@ uses
   Vcl.Grids, Vcl.DBGrids, Vcl.ComCtrls, Vcl.Mask, System.Math, System.StrUtils,
   uDmItem, uItemController, System.Generics.Collections, uItemModel, uFuncoes,
   System.ImageList, Vcl.ImgList, uDmPedidoCab, uPedidoCabModel, uPedidoItemModel,
-  uPedidoCabController, uDmPedidoItem, uPedidoItemController;
+  uPedidoCabController, uDmPedidoItem, uPedidoItemController, System.UITypes;
 
 type
   TAcao = (actNovoPedido, actAlterarPedido, actAlterarItem, actInserirItem);
@@ -369,6 +369,8 @@ begin
     Result := -1;
     Exit;
   end;
+
+  Result := 1;
 end;
 
 procedure TfrmPedido.AlterarItemNoPedido;

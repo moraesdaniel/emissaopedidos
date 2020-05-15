@@ -107,6 +107,8 @@ begin
     Result := -1;
     Exit;
   end;
+
+  Result := 1;
 end;
 
 function TPedidoCabModel.AlterarItem(oPedidoItem: TPedidoItemModel): Integer;
