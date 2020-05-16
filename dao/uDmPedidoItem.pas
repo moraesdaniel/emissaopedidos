@@ -17,6 +17,7 @@ type
     function ExcluirTodos(iIdPed: Integer; out sErro: String): Boolean;
     function CarregarItensDoPedido(iIDPed: Integer;
       out oListaItens: TObjectList<TPedidoItemModel>): Integer;
+    function ExisteVendaDoItem(iIDItem: Integer): Boolean;
   end;
 
 var
@@ -87,6 +88,23 @@ begin
         Result := False;
       end;
     end;
+  end;
+end;
+
+function TDmPedidoItem.ExisteVendaDoItem(iIDItem: Integer): Boolean;
+var
+  sqlBuscarItem: TSQLDataSet;
+begin
+  sqlBuscarItem := TSQLDataSet.Create(nil);
+  try
+    with sqlBuscarItem do begin
+      SQLConnection := DmConexao.SQLConexao;
+      CommandText := 'select count(*) as qtdvendas from pedidoitem where id_item = '+IntToStr(iIDItem);
+      Open;
+      Result := FieldByName('qtdvendas').AsInteger > 0;
+    end;
+  finally
+    FreeAndNil(sqlBuscarItem);
   end;
 end;
 

@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Grids,
   Vcl.ComCtrls, uItemController, uDmItem, Data.DB, Vcl.DBGrids, uItemModel,
-  System.UITypes;
+  System.UITypes, uPedidoItemController;
 
 type
   TAcao = (actInserir, actAtualizar);
@@ -94,10 +94,23 @@ begin
 end;
 
 procedure TfrmCadastroItem.btnExcluirClick(Sender: TObject);
+var
+  oPedidoItemController: TPedidoItemController;
 begin
   if MessageDlg('Deseja mesmo excluir o item '+
     dsPesquisa.DataSet.FieldByName('desc_item').AsString+'?',
     mtConfirmation, [mbyes, mbno], 0) = mrYes then begin
+    oPedidoItemController := TPedidoItemController.Create;
+    try
+      if oPedidoItemController.ExisteVendaDoItem(
+        dsPesquisa.DataSet.FieldByName('id_item').AsInteger) then begin
+        MessageDlg('O item não pode ser excluído pois existem vendas do mesmo!',
+          mtInformation, [mbok], 0);
+        Exit;
+      end;
+    finally
+      FreeAndNil(oPedidoItemController);
+    end;
     ExcluirItem();
   end;
 end;

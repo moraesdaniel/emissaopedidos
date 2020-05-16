@@ -28,10 +28,6 @@ object frmCadastroItem: TfrmCadastroItem
     TabOrder = 0
     object tbPesquisa: TTabSheet
       Caption = 'tbPesquisa'
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object pnlPesquisa: TPanel
         Left = 0
         Top = 0
@@ -146,10 +142,6 @@ object frmCadastroItem: TfrmCadastroItem
     object tbManutencao: TTabSheet
       Caption = 'tbManutencao'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object pnlBotoesManutencao: TPanel
         Left = 0
         Top = 296
