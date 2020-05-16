@@ -23,7 +23,7 @@ var
 implementation
 
 uses
-  Vcl.Dialogs;
+  Vcl.Dialogs, Vcl.Forms;
 
 {%CLASSGROUP 'Vcl.Controls.TControl'}
 
@@ -35,19 +35,41 @@ procedure TDmConexao.DataModuleCreate(Sender: TObject);
 var
   sDataBase, sUserName, sPassword: String;
 begin
+  if not FileExists(getCurrentDir+'\CfgDataBase.INI') then begin
+    MessageDlg('Arquivo de configuração não encontrado!', mtError, [mbok] , 0);
+    Application.Terminate;
+  end;
+
   oConfig := TIniFile.Create(getCurrentDir+'\CfgDataBase.INI');
   try
     sDataBase := oConfig.ReadString('Main', 'Database', '');
     sUserName := oConfig.ReadString('Main', 'User_Name', '');
     sPassword := oConfig.ReadString('Main', 'Password', '');
-    ShowMessage(sDataBase+sLineBreak+sUserName+sLineBreak+sPassword);
   finally
     FreeAndNil(oConfig);
   end;
-  {
-  https://www.devmedia.com.br/forum/criacao-de-sqlconnection-em-runtime-delphi-xe/439498
-  https://www.devmedia.com.br/conexao-com-o-banco-atraves-de-um-arquivo-ini/16210
-  }
+
+  with SQLConexao do begin
+    try
+      LoginPrompt := False;
+      KeepConnection := True;
+      LoadParamsOnConnect := False;
+      DriverName := 'Firebird';
+      LibraryName := 'dbxfb.dll';
+      VendorLib := 'fbclient.dll';
+      Params.Add('Database='+sDataBase);
+      Params.Add('User_Name='+sUserName);
+      Params.Add('Password='+sPassword);
+      Params.Add('VendorLibWin64=fbclient.dll');
+      Open;
+    except on E: Exception do
+      begin
+        MessageDlg('Problemas ao conectar na base de dados ' + sDataBase +
+          sLineBreak + sLineBreak + E.Message, mtError, [mbok], 0);
+        Application.Terminate;
+      end;
+    end; //try
+  end; //with
 end;
 
 end.
