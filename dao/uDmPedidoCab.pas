@@ -13,6 +13,29 @@ type
     SQLAtualizar: TSQLDataSet;
     SQLExcluir: TSQLDataSet;
     SQLBuscar: TSQLDataSet;
+    SQLRelatorio: TSQLDataSet;
+    dspRelatorio: TDataSetProvider;
+    cdsRelatorio: TClientDataSet;
+    SQLRelatorioID_PED: TIntegerField;
+    SQLRelatorioNUMERO: TIntegerField;
+    SQLRelatorioDTEMISSAO: TDateField;
+    SQLRelatorioCLIENTE: TStringField;
+    SQLRelatorioID_ITEMSEQ: TIntegerField;
+    SQLRelatorioID_ITEM: TIntegerField;
+    SQLRelatorioDESC_ITEM: TStringField;
+    SQLRelatorioQUANTIDADE: TFMTBCDField;
+    SQLRelatorioVALORUNIT: TFMTBCDField;
+    SQLRelatorioVALOTOTAL: TFMTBCDField;
+    cdsRelatorioID_PED: TIntegerField;
+    cdsRelatorioNUMERO: TIntegerField;
+    cdsRelatorioDTEMISSAO: TDateField;
+    cdsRelatorioCLIENTE: TStringField;
+    cdsRelatorioID_ITEMSEQ: TIntegerField;
+    cdsRelatorioID_ITEM: TIntegerField;
+    cdsRelatorioDESC_ITEM: TStringField;
+    cdsRelatorioQUANTIDADE: TFMTBCDField;
+    cdsRelatorioVALORUNIT: TFMTBCDField;
+    cdsRelatorioVALOTOTAL: TFMTBCDField;
   private
     { Private declarations }
   public

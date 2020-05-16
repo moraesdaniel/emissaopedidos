@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Grids,
   Vcl.ComCtrls, uItemController, uDmItem, Data.DB, Vcl.DBGrids, uItemModel,
-  System.UITypes, uPedidoItemController;
+  System.UITypes, uPedidoItemController, frxClass, frxDBSet;
 
 type
   TAcao = (actInserir, actAtualizar);
@@ -28,6 +28,9 @@ type
     btnPesquisar: TButton;
     btnGravar: TButton;
     btnExcluir: TButton;
+    relItens: TfrxDBDataset;
+    frxReportItens: TfrxReport;
+    btnImprimir: TButton;
     procedure FormShow(Sender: TObject);
     procedure btnPesquisarClick(Sender: TObject);
     procedure btnVoltarClick(Sender: TObject);
@@ -38,6 +41,7 @@ type
     procedure btnAlterarClick(Sender: TObject);
     procedure btnExcluirClick(Sender: TObject);
     procedure btnGravarClick(Sender: TObject);
+    procedure btnImprimirClick(Sender: TObject);
   private
     FAcao: TAcao;
     procedure PesquisarPelaDescricao;
@@ -46,6 +50,7 @@ type
     procedure AtualizarItem;
     procedure ExcluirItem;
     procedure InserirItem;
+    procedure ImprimirItens;
   public
   end;
 
@@ -124,6 +129,11 @@ begin
   end;
 end;
 
+procedure TfrmCadastroItem.btnImprimirClick(Sender: TObject);
+begin
+  ImprimirItens();
+end;
+
 procedure TfrmCadastroItem.btnNovoClick(Sender: TObject);
 begin
   FAcao := actInserir;
@@ -160,6 +170,12 @@ begin
     FreeAndNil(oItem);
     FreeAndNil(oItemController);
   end;
+end;
+
+procedure TfrmCadastroItem.ImprimirItens;
+begin
+  frxReportItens.PrepareReport;
+  frxReportItens.ShowPreparedReport;
 end;
 
 procedure TfrmCadastroItem.InicializarTela;

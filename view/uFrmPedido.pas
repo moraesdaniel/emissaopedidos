@@ -8,7 +8,8 @@ uses
   Vcl.Grids, Vcl.DBGrids, Vcl.ComCtrls, Vcl.Mask, System.Math, System.StrUtils,
   uDmItem, uItemController, System.Generics.Collections, uItemModel, uFuncoes,
   System.ImageList, Vcl.ImgList, uDmPedidoCab, uPedidoCabModel, uPedidoItemModel,
-  uPedidoCabController, uDmPedidoItem, uPedidoItemController, System.UITypes;
+  uPedidoCabController, uDmPedidoItem, uPedidoItemController, System.UITypes,
+  frxClass, frxDBSet;
 
 type
   TAcao = (actNovoPedido, actAlterarPedido, actAlterarItem, actInserirItem);
@@ -48,6 +49,9 @@ type
     strgridPedidos: TStringGrid;
     btnCancelarItem: TButton;
     lblValorTotalPedido: TLabel;
+    frxReportPedido: TfrxReport;
+    relPedido: TfrxDBDataset;
+    btnImprimir: TButton;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure edtQuantidadeChange(Sender: TObject);
@@ -69,6 +73,7 @@ type
     procedure btnGravarClick(Sender: TObject);
     procedure btnPesquisarClick(Sender: TObject);
     procedure btnExcluirClick(Sender: TObject);
+    procedure btnImprimirClick(Sender: TObject);
   private
     bFormatando: Boolean;
     oFuncoes: TFuncoes;
@@ -92,6 +97,7 @@ type
     procedure ExcluirPedido;
     procedure AlterarPedido;
     procedure CarregarCabecalhoPedido(oPedidoCab: TPedidoCabModel);
+    procedure ImprimirPedido;
     { Private declarations }
   public
     { Public declarations }
@@ -199,6 +205,25 @@ begin
   tbPesquisa.TabVisible := False;
   tbPedido.TabVisible := False;
   pgPedido.ActivePage := tbPesquisa;
+end;
+
+procedure TfrmPedido.ImprimirPedido;
+var
+  iIDPed: Integer;
+begin
+  if strgridPedidos.Row = 0 then begin
+    MessageDlg('Selecione o pedido a imprimir!', mtInformation, [mbok], 0);
+    Exit;
+  end;
+
+  iIDPed := StrToInt(strgridPedidos.Cells[0, strgridPedidos.Row]);
+
+  DmPedidoCab.cdsRelatorio.Close;
+  DmPedidoCab.cdsRelatorio.ParamByName('ID_PED').AsInteger := iIDPed;
+  DmPedidoCab.cdsRelatorio.Open;
+
+  frxReportPedido.PrepareReport;
+  frxReportPedido.ShowPreparedReport;
 end;
 
 procedure TfrmPedido.IncluirItemNoPedido;
@@ -518,6 +543,11 @@ begin
   end;
   edtPesquisa.Text := '';
   MostrarPedidosSalvos('');
+end;
+
+procedure TfrmPedido.btnImprimirClick(Sender: TObject);
+begin
+  ImprimirPedido();
 end;
 
 procedure TfrmPedido.btnIncluirAlterarClick(Sender: TObject);
