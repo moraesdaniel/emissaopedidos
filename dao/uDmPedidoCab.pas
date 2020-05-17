@@ -16,26 +16,6 @@ type
     SQLRelatorio: TSQLDataSet;
     dspRelatorio: TDataSetProvider;
     cdsRelatorio: TClientDataSet;
-    SQLRelatorioID_PED: TIntegerField;
-    SQLRelatorioNUMERO: TIntegerField;
-    SQLRelatorioDTEMISSAO: TDateField;
-    SQLRelatorioCLIENTE: TStringField;
-    SQLRelatorioID_ITEMSEQ: TIntegerField;
-    SQLRelatorioID_ITEM: TIntegerField;
-    SQLRelatorioDESC_ITEM: TStringField;
-    SQLRelatorioQUANTIDADE: TFMTBCDField;
-    SQLRelatorioVALORUNIT: TFMTBCDField;
-    SQLRelatorioVALOTOTAL: TFMTBCDField;
-    cdsRelatorioID_PED: TIntegerField;
-    cdsRelatorioNUMERO: TIntegerField;
-    cdsRelatorioDTEMISSAO: TDateField;
-    cdsRelatorioCLIENTE: TStringField;
-    cdsRelatorioID_ITEMSEQ: TIntegerField;
-    cdsRelatorioID_ITEM: TIntegerField;
-    cdsRelatorioDESC_ITEM: TStringField;
-    cdsRelatorioQUANTIDADE: TFMTBCDField;
-    cdsRelatorioVALORUNIT: TFMTBCDField;
-    cdsRelatorioVALOTOTAL: TFMTBCDField;
   private
     { Private declarations }
   public
@@ -48,6 +28,7 @@ type
     function CarregarPedido(iIDPed: Integer;
       out oPedidoCabModel: TPedidoCabModel): Boolean;
     function CarregarItensNoPedido(oPedidoCabModel: TPedidoCabModel): Integer;
+    function PesquisarPedidoRelatorio(iIDPed: Integer): Integer;
   end;
 
 var
@@ -56,7 +37,7 @@ var
 implementation
 
 uses
-  Data.DBXCommon;
+  Data.DBXCommon, Vcl.Dialogs;
 
 {%CLASSGROUP 'Vcl.Controls.TControl'}
 
@@ -102,6 +83,19 @@ begin
       FreeAndNil(oPedidoItemController);
     end;
   end; //With SQLInserir
+end;
+
+function TDmPedidoCab.PesquisarPedidoRelatorio(iIDPed: Integer): Integer;
+begin
+  if cdsRelatorio.Active then begin
+    cdsRelatorio.Close;
+  end;
+
+  cdsRelatorio.ParamByName('ID_PED').AsInteger := iIDPEd;
+  cdsRelatorio.Open;
+  cdsRelatorio.First;
+
+  Result := cdsRelatorio.RecordCount;
 end;
 
 function TDmPedidoCab.Atualizar(oPedidoCabModel: TPedidoCabModel;

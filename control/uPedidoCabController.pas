@@ -16,6 +16,7 @@ type
         oListaPedidos: TObjectList<TPedidoCabModel>): Integer;
       function CarregarPedido(iIDPed: Integer;
         out oPedidoCabModel: TPedidoCabModel): Boolean;
+      function PesquisarPedidoRelatorio(iIDPed: Integer): Integer;
   end;
 
 implementation
@@ -55,6 +56,12 @@ function TPedidoCabController.Inserir(oPedidoCabModel: TPedidoCabModel;
   out sErro: String): Boolean;
 begin
   Result := DmPedidoCab.Inserir(oPedidoCabModel, sErro);
+end;
+
+function TPedidoCabController.PesquisarPedidoRelatorio(
+  iIDPed: Integer): Integer;
+begin
+  Result := DmPedidoCab.PesquisarPedidoRelatorio(iIDPed);
 end;
 
 end.

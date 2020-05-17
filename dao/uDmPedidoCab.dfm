@@ -109,48 +109,6 @@ object DmPedidoCab: TDmPedidoCab
     SQLConnection = DmConexao.SQLConexao
     Left = 72
     Top = 80
-    object SQLRelatorioID_PED: TIntegerField
-      FieldName = 'ID_PED'
-      Required = True
-    end
-    object SQLRelatorioNUMERO: TIntegerField
-      FieldName = 'NUMERO'
-      Required = True
-    end
-    object SQLRelatorioDTEMISSAO: TDateField
-      FieldName = 'DTEMISSAO'
-      Required = True
-    end
-    object SQLRelatorioCLIENTE: TStringField
-      FieldName = 'CLIENTE'
-      Required = True
-      Size = 100
-    end
-    object SQLRelatorioID_ITEMSEQ: TIntegerField
-      FieldName = 'ID_ITEMSEQ'
-    end
-    object SQLRelatorioID_ITEM: TIntegerField
-      FieldName = 'ID_ITEM'
-    end
-    object SQLRelatorioDESC_ITEM: TStringField
-      FieldName = 'DESC_ITEM'
-      Size = 100
-    end
-    object SQLRelatorioQUANTIDADE: TFMTBCDField
-      FieldName = 'QUANTIDADE'
-      Precision = 18
-      Size = 2
-    end
-    object SQLRelatorioVALORUNIT: TFMTBCDField
-      FieldName = 'VALORUNIT'
-      Precision = 18
-      Size = 2
-    end
-    object SQLRelatorioVALOTOTAL: TFMTBCDField
-      FieldName = 'VALOTOTAL'
-      Precision = 18
-      Size = 4
-    end
   end
   object dspRelatorio: TDataSetProvider
     DataSet = SQLRelatorio
@@ -168,47 +126,5 @@ object DmPedidoCab: TDmPedidoCab
     ProviderName = 'dspRelatorio'
     Left = 200
     Top = 104
-    object cdsRelatorioID_PED: TIntegerField
-      FieldName = 'ID_PED'
-      Required = True
-    end
-    object cdsRelatorioNUMERO: TIntegerField
-      FieldName = 'NUMERO'
-      Required = True
-    end
-    object cdsRelatorioDTEMISSAO: TDateField
-      FieldName = 'DTEMISSAO'
-      Required = True
-    end
-    object cdsRelatorioCLIENTE: TStringField
-      FieldName = 'CLIENTE'
-      Required = True
-      Size = 100
-    end
-    object cdsRelatorioID_ITEMSEQ: TIntegerField
-      FieldName = 'ID_ITEMSEQ'
-    end
-    object cdsRelatorioID_ITEM: TIntegerField
-      FieldName = 'ID_ITEM'
-    end
-    object cdsRelatorioDESC_ITEM: TStringField
-      FieldName = 'DESC_ITEM'
-      Size = 100
-    end
-    object cdsRelatorioQUANTIDADE: TFMTBCDField
-      FieldName = 'QUANTIDADE'
-      Precision = 18
-      Size = 2
-    end
-    object cdsRelatorioVALORUNIT: TFMTBCDField
-      FieldName = 'VALORUNIT'
-      Precision = 18
-      Size = 2
-    end
-    object cdsRelatorioVALOTOTAL: TFMTBCDField
-      FieldName = 'VALOTOTAL'
-      Precision = 18
-      Size = 4
-    end
   end
 end

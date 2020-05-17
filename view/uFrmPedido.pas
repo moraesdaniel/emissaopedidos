@@ -210,6 +210,7 @@ end;
 procedure TfrmPedido.ImprimirPedido;
 var
   iIDPed: Integer;
+  oPedidoCabController: TPedidoCabController;
 begin
   if strgridPedidos.Row = 0 then begin
     MessageDlg('Selecione o pedido a imprimir!', mtInformation, [mbok], 0);
@@ -218,12 +219,19 @@ begin
 
   iIDPed := StrToInt(strgridPedidos.Cells[0, strgridPedidos.Row]);
 
-  DmPedidoCab.cdsRelatorio.Close;
-  DmPedidoCab.cdsRelatorio.ParamByName('ID_PED').AsInteger := iIDPed;
-  DmPedidoCab.cdsRelatorio.Open;
+  oPedidoCabController := TPedidoCabController.Create;
 
-  frxReportPedido.PrepareReport;
-  frxReportPedido.ShowPreparedReport;
+  try
+    if oPedidoCabController.PesquisarPedidoRelatorio(iIDPed) > 0 then begin
+      frxReportPedido.PrepareReport;
+      frxReportPedido.ShowPreparedReport;
+    end else begin
+      MessageDlg('Não foi possível encontrar os dados do pedido!',
+        mtInformation, [mbok], 0);
+    end;
+  finally
+    FreeAndNil(oPedidoCabController);
+  end;
 end;
 
 procedure TfrmPedido.IncluirItemNoPedido;

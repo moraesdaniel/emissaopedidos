@@ -504,8 +504,8 @@ object frmPedido: TfrmPedido
     PreviewOptions.Zoom = 1.000000000000000000
     PrintOptions.Printer = 'Default'
     PrintOptions.PrintOnSheet = 0
-    ReportOptions.CreateDate = 43967.753190694440000000
-    ReportOptions.LastChange = 43967.765758275460000000
+    ReportOptions.CreateDate = 43967.753190694400000000
+    ReportOptions.LastChange = 43968.464476550900000000
     ScriptLanguage = 'PascalScript'
     ScriptText.Strings = (
       'begin'
@@ -537,12 +537,13 @@ object frmPedido: TfrmPedido
       object Header1: TfrxHeader
         FillType = ftBrush
         Frame.Typ = []
-        Height = 120.944960000000000000
+        Height = 147.401670000000000000
         Top = 18.897650000000000000
         Width = 718.110700000000000000
         object Memo1: TfrxMemoView
           AllowVectorExport = True
-          Width = 98.267716535433070000
+          Top = 22.677165354330700000
+          Width = 98.267716540000000000
           Height = 18.897650000000000000
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
@@ -557,8 +558,8 @@ object frmPedido: TfrmPedido
         end
         object Memo2: TfrxMemoView
           AllowVectorExport = True
-          Top = 22.677180000000000000
-          Width = 98.267716535433070000
+          Top = 45.354330708661400000
+          Width = 98.267716540000000000
           Height = 18.897650000000000000
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
@@ -573,8 +574,8 @@ object frmPedido: TfrmPedido
         end
         object Memo3: TfrxMemoView
           AllowVectorExport = True
-          Top = 45.354360000000000000
-          Width = 98.267716535433070000
+          Top = 68.031496062992100000
+          Width = 98.267716540000000000
           Height = 18.897650000000000000
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
@@ -589,7 +590,7 @@ object frmPedido: TfrmPedido
         end
         object Memo4: TfrxMemoView
           AllowVectorExport = True
-          Top = 68.031540000000000000
+          Top = 90.708661417322800000
           Width = 98.267716540000000000
           Height = 18.897650000000000000
           Font.Charset = DEFAULT_CHARSET
@@ -606,7 +607,7 @@ object frmPedido: TfrmPedido
         object Line1: TfrxLineView
           AllowVectorExport = True
           Left = -3.779530000000000000
-          Top = 94.488250000000000000
+          Top = 117.165354330709000000
           Width = 718.110236220000000000
           Color = clBlack
           Frame.Typ = [ftTop]
@@ -615,6 +616,7 @@ object frmPedido: TfrmPedido
           IndexTag = 1
           AllowVectorExport = True
           Left = 102.047310000000000000
+          Top = 22.677165354330700000
           Width = 79.370130000000000000
           Height = 18.897650000000000000
           DataField = 'ID_PED'
@@ -634,7 +636,7 @@ object frmPedido: TfrmPedido
           IndexTag = 1
           AllowVectorExport = True
           Left = 102.047310000000000000
-          Top = 22.677180000000000000
+          Top = 45.354330708661400000
           Width = 79.370130000000000000
           Height = 18.897650000000000000
           DataField = 'NUMERO'
@@ -654,7 +656,7 @@ object frmPedido: TfrmPedido
           IndexTag = 1
           AllowVectorExport = True
           Left = 102.047310000000000000
-          Top = 45.354360000000000000
+          Top = 68.031496062992100000
           Width = 79.370130000000000000
           Height = 18.897650000000000000
           DataField = 'DTEMISSAO'
@@ -676,7 +678,7 @@ object frmPedido: TfrmPedido
           IndexTag = 1
           AllowVectorExport = True
           Left = 102.047310000000000000
-          Top = 68.031540000000000000
+          Top = 90.708661417322800000
           Width = 400.630180000000000000
           Height = 18.897650000000000000
           DataField = 'CLIENTE'
@@ -695,7 +697,7 @@ object frmPedido: TfrmPedido
         object Memo5: TfrxMemoView
           AllowVectorExport = True
           Left = 41.574803150000000000
-          Top = 98.267716535433070000
+          Top = 120.944881889764000000
           Width = 79.370078740000000000
           Height = 18.897650000000000000
           Font.Charset = DEFAULT_CHARSET
@@ -711,7 +713,7 @@ object frmPedido: TfrmPedido
         object Memo6: TfrxMemoView
           AllowVectorExport = True
           Left = 124.724409450000000000
-          Top = 98.267716535433070000
+          Top = 120.944881889764000000
           Width = 94.488250000000000000
           Height = 18.897650000000000000
           Font.Charset = DEFAULT_CHARSET
@@ -727,7 +729,7 @@ object frmPedido: TfrmPedido
         object Memo7: TfrxMemoView
           AllowVectorExport = True
           Left = 472.440944880000000000
-          Top = 98.267716535433070000
+          Top = 120.944881889764000000
           Width = 79.370078740000000000
           Height = 18.897650000000000000
           Font.Charset = DEFAULT_CHARSET
@@ -744,7 +746,7 @@ object frmPedido: TfrmPedido
         object Memo8: TfrxMemoView
           AllowVectorExport = True
           Left = 555.590551180000000000
-          Top = 98.267716535433070000
+          Top = 120.944881889764000000
           Width = 79.370078740000000000
           Height = 18.897650000000000000
           Font.Charset = DEFAULT_CHARSET
@@ -761,7 +763,7 @@ object frmPedido: TfrmPedido
         object Memo9: TfrxMemoView
           AllowVectorExport = True
           Left = 638.740157480000000000
-          Top = 98.267716535433070000
+          Top = 120.944881889764000000
           Width = 79.370078740000000000
           Height = 18.897650000000000000
           Font.Charset = DEFAULT_CHARSET
@@ -775,13 +777,32 @@ object frmPedido: TfrmPedido
             'Valor Total')
           ParentFont = False
         end
+        object Memo11: TfrxMemoView
+          AllowVectorExport = True
+          Left = 294.803149606299000000
+          Width = 128.504020000000000000
+          Height = 18.897650000000000000
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWhite
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = [fsBold]
+          Frame.Typ = []
+          Fill.BackColor = clBlack
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'PEDIDO DE VENDA')
+          ParentFont = False
+        end
       end
       object MasterData1: TfrxMasterData
         FillType = ftBrush
         Frame.Typ = []
         Height = 22.677180000000000000
-        Top = 162.519790000000000000
+        Top = 188.976500000000000000
         Width = 718.110700000000000000
+        DataSet = relPedido
+        DataSetName = 'relPedido'
         RowCount = 0
         object relPedidoID_ITEMSEQ: TfrxMemoView
           IndexTag = 1
@@ -797,7 +818,6 @@ object frmPedido: TfrmPedido
           Font.Name = 'Arial'
           Font.Style = []
           Frame.Typ = []
-          HAlign = haRight
           Memo.UTF8W = (
             '[relPedido."ID_ITEMSEQ"]')
           ParentFont = False
@@ -817,7 +837,6 @@ object frmPedido: TfrmPedido
           Font.Name = 'Arial'
           Font.Style = []
           Frame.Typ = []
-          HAlign = haRight
           Memo.UTF8W = (
             '[relPedido."ID_ITEM"]')
           ParentFont = False
@@ -903,6 +922,50 @@ object frmPedido: TfrmPedido
           Frame.Typ = []
           Memo.UTF8W = (
             '[relPedido."DESC_ITEM"]')
+        end
+      end
+      object Footer1: TfrxFooter
+        FillType = ftBrush
+        Frame.Typ = []
+        Height = 22.677180000000000000
+        Top = 234.330860000000000000
+        Width = 718.110700000000000000
+        object SysMemo1: TfrxSysMemoView
+          AllowVectorExport = True
+          Left = 623.622450000000000000
+          Top = 3.779530000000000000
+          Width = 94.488250000000000000
+          Height = 18.897650000000000000
+          DisplayFormat.DecimalSeparator = ','
+          DisplayFormat.FormatStr = '%2.2n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = [fsBold]
+          Frame.Typ = []
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[SUM(<relPedido."VALOTOTAL">,MasterData1)]')
+          ParentFont = False
+        end
+        object Memo10: TfrxMemoView
+          AllowVectorExport = True
+          Left = 449.764070000000000000
+          Top = 3.779530000000000000
+          Width = 170.078850000000000000
+          Height = 18.897650000000000000
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = [fsBold]
+          Frame.Typ = []
+          HAlign = haRight
+          Memo.UTF8W = (
+            'VALOR TOTAL PEDIDO')
+          ParentFont = False
         end
       end
     end
