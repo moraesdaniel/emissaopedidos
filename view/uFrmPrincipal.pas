@@ -14,7 +14,6 @@ type
     Item1: TMenuItem;
     Venda1: TMenuItem;
     Pedido1: TMenuItem;
-    procedure btnItemClick(Sender: TObject);
     procedure Item1Click(Sender: TObject);
     procedure Pedido1Click(Sender: TObject);
   private
@@ -29,15 +28,6 @@ var
 implementation
 
 {$R *.dfm}
-
-procedure TfrmPrincipal.btnItemClick(Sender: TObject);
-begin
-  if (frmCadastroItem = nil) then begin
-    frmCadastroItem := TfrmCadastroItem.Create(Application);
-    frmCadastroItem.WindowState := wsNormal;
-    frmCadastroItem.Show;
-  end;
-end;
 
 procedure TfrmPrincipal.Item1Click(Sender: TObject);
 begin

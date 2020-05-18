@@ -505,7 +505,7 @@ object frmPedido: TfrmPedido
     PrintOptions.Printer = 'Default'
     PrintOptions.PrintOnSheet = 0
     ReportOptions.CreateDate = 43967.753190694400000000
-    ReportOptions.LastChange = 43968.464476550900000000
+    ReportOptions.LastChange = 43968.470040659730000000
     ScriptLanguage = 'PascalScript'
     ScriptText.Strings = (
       'begin'
@@ -779,7 +779,7 @@ object frmPedido: TfrmPedido
         end
         object Memo11: TfrxMemoView
           AllowVectorExport = True
-          Left = 294.803149606299000000
+          Left = 294.803149610000000000
           Width = 128.504020000000000000
           Height = 18.897650000000000000
           Font.Charset = DEFAULT_CHARSET
